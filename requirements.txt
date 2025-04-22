@@ -1,0 +1,16 @@
+Gunicorn
+pymongo
+python-dotenv
+Flask-Mail
+Flask-PyMongo
+matplotlib
+numpy
+plotly
+Flask
+pymongo
+bcrypt
+flask-cors
+cloudinary
+pandas
+Werkzeug
+dnspython
