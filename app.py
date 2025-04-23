@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import ssl
 import cloudinary
+import xlsxwriter
 import cloudinary.uploader
 from flask import send_file
 import pandas as pd
@@ -668,36 +669,39 @@ def admin_attendance():
 #     df.to_excel(output, index=False)
 #     output.seek(0)
 #     return send_file(output, as_attachment=True, download_name="employee_attendance_history.xlsx")
+from flask import send_file
+import pandas as pd
+from io import BytesIO
+
 @app.route('/export_online_employees')
 def export_online_employees():
-    records = attendance_collection.find({})  # Fetch all historical records
-    data = []
+    try:
+        # Get all records (historical login/logout records)
+        records = list(attendance_collection.find())
 
-    for record in records:
-        user = users_collection.find_one({"email": record["email"]})
-        login = record.get("login_time")
-        logout = record.get("logout_time")
-        if login and logout:
-            duration = str(logout - login)
-        elif login:
-            duration = str(datetime.now() - login)
-        else:
-            duration = "N/A"
+        export_data = []
+        for rec in records:
+            export_data.append({
+                "Name": users_collection.find_one({"email": rec["email"]}).get("username", "N/A"),
+                "Email": rec["email"],
+                "Date": rec["date"],
+                "Login Time": rec["login_time"].strftime("%Y-%m-%d %H:%M:%S") if rec.get("login_time") else "N/A",
+                "Logout Time": rec["logout_time"].strftime("%Y-%m-%d %H:%M:%S") if rec.get("logout_time") else "N/A",
+                "Duration": rec.get("duration", "N/A"),
+                "Status": rec.get("status", "N/A")
+            })
 
-        data.append({
-            "Name": user.get("username", "N/A"),
-            "Email": record["email"],
-            "Date": record.get("date", "N/A"),
-            "Login Time": login.strftime('%Y-%m-%d %H:%M:%S') if login else "",
-            "Logout Time": logout.strftime('%Y-%m-%d %H:%M:%S') if logout else "Still Online",
-            "Duration": duration,
-            "Status": record.get("status", "N/A")
-        })
+        df = pd.DataFrame(export_data)
 
-    df = pd.DataFrame(data)
-    output = BytesIO()
-    df.to_excel(output, index=False)
-    output.seek(0)
-    return send_file(output, as_attachment=True, download_name="employee_attendance_history.xlsx")
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+            df.to_excel(writer, index=False, sheet_name='Employee History')
+
+        output.seek(0)
+        return send_file(output, as_attachment=True, download_name="employee_history.xlsx", mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    except Exception as e:
+        return f"An error occurred: {str(e)}", 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)
