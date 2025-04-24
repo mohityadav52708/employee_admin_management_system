@@ -47,16 +47,29 @@
           <h4>Notifications</h4>
           <ul>
             {% if task_status_counts['Pending'] > 0 %}
-            <li>📝 {{ task_status_counts['Pending'] }} Pending Task(s)</li>
-            {% endif %} {% if leave_status_counts['Pending'] > 0 %}
-            <li>🛫 {{ leave_status_counts['Pending'] }} Leave Request(s)</li>
-            {% endif %} {% if review_status_counts['Pending'] > 0 %}
-            <li>📣 {{ review_status_counts['Pending'] }} Employee Review(s)</li>
-            {% endif %} {% if total_alerts == 0 %}
+            <li>
+              <a href="{{ url_for('tasks') }}">📝 {{ task_status_counts['Pending'] }} Pending Task(s)</a>
+            </li>
+            {% endif %}
+            
+            {% if leave_status_counts['Pending'] > 0 %}
+            <li>
+              <a href="{{ url_for('admin_leave_requests') }}">🛫 {{ leave_status_counts['Pending'] }} Leave Request(s)</a>
+            </li>
+            {% endif %}
+            
+            {% if review_status_counts['Pending'] > 0 %}
+            <li>
+              <a href="{{ url_for('admin_complaints') }}">📣 {{ review_status_counts['Pending'] }} Employee Review(s)</a>
+            </li>
+            {% endif %}
+            
+            {% if total_alerts == 0 %}
             <li>No pending notifications ✅</li>
             {% endif %}
           </ul>
         </div>
+        
       </div>
       <a href="/logout" class="logout-btn">Logout</a>
     </div>

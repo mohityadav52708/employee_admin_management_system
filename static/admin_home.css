@@ -789,6 +789,20 @@ canvas {
   .notification-dropdown li:last-child {
     border-bottom: none;
   }
+  .notification-dropdown li a {
+    color: #1f2937;
+    text-decoration: none;
+    padding: 8px 10px;
+    display: block;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .notification-dropdown li a:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #1e40af;
+    font-weight: 500;
+  }
 
   @media (max-width: 768px) {
     .notification-bar {

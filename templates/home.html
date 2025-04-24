@@ -21,56 +21,69 @@
   <body>
     <!-- Burger Icon for Mobile -->
     <div class="image">
-
       <h1 id="dekstop">Welcome Back , {{username}}</h1>
       <div class="burger-icon open" id="burgerIcon">&#9776;</div>
       <div class="burger-icon close" id="burgerIconClose">&#10006;</div>
-      
+
       <div class="profile-section">
-        <img src="{{ user.profile_image if user.profile_image else url_for('static', filename='default-profile.png') }}" 
-            alt="Profile Image" class="profile-img">
-    </div>
-    <div class="notification-bar">
-      <div class="notification-icon" onclick="toggleDropdown('notificationDropdown')">
-        <i class="fa-solid fa-bell"></i>
-        {% set total_alerts = (task_status_counts['Pending'] if task_status_counts and 'Pending' in task_status_counts else 0)
-                          + (leave_status_counts['Pending'] if leave_status_counts and 'Pending' in leave_status_counts else 0)
-                          + (review_status_counts['Pending'] if review_status_counts and 'Pending' in review_status_counts else 0) %}
-        {% if total_alerts > 0 %}
-        <span class="badge">{{ total_alerts }}</span>
-        {% endif %}
+        <img
+          src="{{ user.profile_image if user.profile_image else url_for('static', filename='default-profile.png') }}"
+          alt="Profile Image"
+          class="profile-img"
+        />
       </div>
-      <div id="notificationDropdown" class="notification-dropdown">
-        <h4>Notifications</h4>
-        <ul>
-          {% if task_status_counts and task_status_counts['Pending'] > 0 %}
-            <li>📝 {{ task_status_counts['Pending'] }} Pending Task(s)</li>
+      <div class="notification-bar">
+        <div class="notification-icon" onclick="toggleDropdown('notificationDropdown')">
+          <i class="fa-solid fa-bell"></i>
+          {% set total_alerts = (task_status_counts['Pending'] if task_status_counts else 0)
+                              + (leave_status_counts['Pending'] if leave_status_counts else 0)
+                              + (review_status_counts['Pending'] if review_status_counts else 0) %}
+          {% if total_alerts > 0 %}
+          <span class="badge">{{ total_alerts }}</span>
           {% endif %}
-          {% if leave_status_counts and leave_status_counts['Pending'] > 0 %}
-            <li>🛫 {{ leave_status_counts['Pending'] }} Leave Request(s)</li>
-          {% endif %}
-          {% if review_status_counts and review_status_counts['Pending'] > 0 %}
-            <li>📣 {{ review_status_counts['Pending'] }} Review(s)</li>
-          {% endif %}
-          {% if total_alerts == 0 %}
+        </div>
+      
+        <div id="notificationDropdown" class="notification-dropdown">
+          <h4>Your Notifications</h4>
+          <ul>
+            {% if task_status_counts and task_status_counts['Pending'] > 0 %}
+            <li>
+              <a href="{{ url_for('tasks') }}">📝 You have {{ task_status_counts['Pending'] }} pending task(s)</a>
+            </li>
+            {% endif %}
+      
+            {% if leave_status_counts and leave_status_counts['Pending'] > 0 %}
+            <li>
+              <a href="{{ url_for('request_leave') }}">🛫 {{ leave_status_counts['Pending'] }} leave request(s) awaiting review</a>
+            </li>
+            {% endif %}
+      
+            {% if review_status_counts and review_status_counts['Pending'] > 0 %}
+            <li>
+              <a href="{{ url_for('complaints') }}">📣 {{ review_status_counts['Pending'] }} complaint(s) pending</a>
+            </li>
+            {% endif %}
+      
+            {% if total_alerts == 0 %}
             <li>No pending notifications ✅</li>
-          {% endif %}
-        </ul>
+            {% endif %}
+          </ul>
+        </div>
       </div>
-    </div>
+      
       <a href="/logout" class="logout-btn">Logout</a>
-  </div>
-  <div class="sidebar" id="sidebar">
+    </div>
+    <div class="sidebar" id="sidebar">
       <h2>Employee Dashboard</h2>
       <a href="{{url_for('home')}}">Dashboard</a>
       <a href="{{ url_for('profile') }}">Profile</a>
-        <a href="{{url_for('tasks')}}">Task Management</a>
-        <a href="{{ url_for('request_leave') }}">Leave Management</a>
-        <a href="#">Learning & Development</a>
-        <a href="#">Attendance</a>
-        <a href="{{url_for('complaints')}}">Reviews</a>
-  </div>
-  <div class="content">
+      <a href="{{url_for('tasks')}}">Task Management</a>
+      <a href="{{ url_for('request_leave') }}">Leave Management</a>
+      <a href="#">Learning & Development</a>
+      <a href="#">Attendance</a>
+      <a href="{{url_for('complaints')}}">Reviews</a>
+    </div>
+    <div class="content">
       <h1 id="mobile">Welcome Back ,{{username}}</h1>
       <!-- Dashboard Cards -->
       <div class="container">
@@ -140,17 +153,16 @@
         <p>&copy; 2025 Employee Management System. All Rights Reserved.</p>
       </div>
     </div>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <script>
-            window.onload = function() {
-                {% for category, message in messages %}
-                    alert("{{ message }}");
-                {% endfor %}
-            };
-        </script>
-    {% endif %}
-{% endwith %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <script>
+      window.onload = function() {
+          {% for category, message in messages %}
+              alert("{{ message }}");
+          {% endfor %}
+      };
+    </script>
+    {% endif %} {% endwith %}
     <script>
       // JavaScript for toggling sidebar visibility
       const burgerIcon = document.getElementById("burgerIcon");
@@ -203,7 +215,8 @@
       });
       function toggleDropdown(id) {
         const dropdown = document.getElementById(id);
-        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        dropdown.style.display =
+          dropdown.style.display === "block" ? "none" : "block";
       }
     </script>
   </body>

@@ -421,72 +421,55 @@ def home():
         user_email = session['user']
         user = users_collection.find_one({"email": user_email})
         username = user.get('username', 'User')
-        # Ensure default values
-        task_status_counts = {"Pending": 0}
-        leave_status_counts = {"Pending": 0}
-        review_status_counts = {"Pending": 0}
+
+        today = datetime.today().strftime('%Y-%m-%d')
         online_employees = []
         attendance_records = []
 
-        if user:
-            username = user.get('username', 'User')
-            today = datetime.today().strftime('%Y-%m-%d')
+        # Online session info
+        online_record = attendance_collection.find_one({
+            "email": user_email,
+            "status": "Online",
+            "date": today
+        })
 
-            # Online session info
-            online_record = attendance_collection.find_one({
+        if online_record:
+            online_employees.append({
                 "email": user_email,
-                "status": "Online",
-                "date": today
+                "login_time": online_record.get("login_time"),
+                "date": online_record.get("date"),
+                "duration": str(datetime.now() - online_record.get("login_time")),
+                "status": "Online"
             })
+            attendance_records = online_employees
 
-            if online_record:
-                online_employees.append({
-                    "email": user_email,
-                    "login_time": online_record.get("login_time"),
-                    "date": online_record.get("date"),
-                    "duration": str(datetime.now() - online_record.get("login_time")),
-                    "status": "Online"
-                })
-                attendance_records = online_employees
+        # ✅ Employee-specific notifications (FIXED)
+        task_status_counts = {
+            "Pending": db.tasks.count_documents({"employee_email": user_email, "status": "Pending"})
+        }
 
-            # Notifications
-            task_status_counts = {
-                "Pending": db.tasks.count_documents({"status": "Pending"}),
-                "In Progress": db.tasks.count_documents({"status": "In Progress"}),
-                "Completed": db.tasks.count_documents({"status": "Completed"})
-            }
+        leave_status_counts = {
+            "Pending": db.leave_requests.count_documents({"employee_email": user_email, "status": "Pending"})
+        }
 
-            leave_status_counts = {
-                "Pending": db.leave_requests.count_documents({"status": "Pending"}),
-                "Approved": db.leave_requests.count_documents({"status": "Approved"}),
-                "Rejected": db.leave_requests.count_documents({"status": "Rejected"})
-            }   
+        review_status_counts = {
+            "Pending": db.complaints.count_documents({"employee_email": user_email, "status": "Pending"})
+        }
 
-            review_status_counts = {
-                "Pending": db.complaints.count_documents({"status": "Pending"}),
-                "Resolved": db.complaints.count_documents({"status": "Resolved"}),
-                "Rejected": db.complaints.count_documents({"status": "Rejected"})
-            }
-
-
-            return render_template(
-                'home.html',
-                username=username,
-                user=user,
-                online_employees=online_employees,
-                attendance_records=attendance_records,
-                task_status_counts=task_status_counts,
-                leave_status_counts=leave_status_counts,
-                review_status_counts=review_status_counts
-            )
-
-        else:
-            flash("User not found.", "danger")
-            return redirect(url_for('login'))
-
+        return render_template(
+            'home.html',
+            username=username,
+            user=user,
+            online_employees=online_employees,
+            attendance_records=attendance_records,
+            task_status_counts=task_status_counts,
+            leave_status_counts=leave_status_counts,
+            review_status_counts=review_status_counts
+        )
     else:
         flash('Access denied. Please log in as an employee.', 'danger')
         return redirect(url_for('login'))
+
 
 
 @app.route('/complaints', methods=['GET', 'POST'])
