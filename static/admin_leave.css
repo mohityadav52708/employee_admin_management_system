@@ -474,3 +474,6 @@ button[name="action"][value="reject"]:hover {
 .footer p{
     color: black;
 }  
+.loader-container p{
+color: #000000;
+}
