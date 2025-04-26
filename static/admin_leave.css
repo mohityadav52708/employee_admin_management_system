@@ -19,7 +19,10 @@ body {
 h2 {
     text-align: center;
     color: #ffffff;
-    margin-bottom: 30px;
+    margin-bottom: 0px;
+}
+.logonew-icon h2{
+    margin-bottom: 0;
 }
 #table {
     width: 100%;
@@ -32,7 +35,7 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 th {
-    background-color: #3498db;
+    background-color: #8b5cf6;
     color: #fff;
 }
 td {
@@ -206,3 +209,268 @@ button[name="action"][value="reject"]:hover {
         padding: 8px 10px;
     }
 }
+
+  .loader-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-in;
+  }
+
+  .loader-overlay.active {
+    display: flex;
+  }
+
+  .loader-container {
+    text-align: center;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    animation: scaleIn 0.5s ease;
+  }
+
+  .fancy-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid transparent;
+    border-top: 6px solid #00f0ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    box-shadow: 0 0 20px #00f0ff, 0 0 30px #00f0ff;
+    margin: 0 auto 10px;
+  }
+
+  .loader-container p {
+    font-size: 16px;
+    margin-top: 5px;
+    color: #e0e0e0;
+    animation: fadeInText 0.8s ease-in;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInText {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scaleIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  #history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+  }
+  
+  #history-table th, #history-table td {
+    padding: 12px 15px;
+    text-align: center;
+  }
+  #pending-table  {
+   width: 100%;
+  }
+  #history-table thead {
+    background-color: #8b5cf6;
+    color: #ffffff;
+  }
+  
+  #history-table tbody tr:nth-child(even) {
+    background-color: #f1f1f1;
+  }
+  
+  #history-table tbody tr:hover {
+    background-color: #d4edda;
+  }
+  
+  #history-table td {
+    font-size: 14px;
+    color: #333;
+  }
+  
+  /* Base table styles */
+#pending-table, #history-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+  }
+  
+  #pending-table th, #pending-table td,
+  #history-table th, #history-table td {
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  #pending-table thead, #history-table thead {
+    background-color: #343a40;
+    color: white;
+  }
+  
+  #pending-table tbody tr:nth-child(even),
+  #history-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  #pending-table tbody tr:hover,
+  #history-table tbody tr:hover {
+    background-color: #e8f5e9;
+  }
+  
+  /* Buttons for approve/reject */
+  .btn-approve {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btn-reject {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Loader overlay */
+  .loader-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .loader-overlay.active {
+    display: flex;
+  }
+  
+  .loader-container {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.25);
+  }
+  
+  .fancy-spinner {
+    border: 5px solid #ccc;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+  }
+  h1,h2{
+    color: black;
+  }
+  h2{
+    margin-top: 10px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    #pending-table, #history-table {
+      font-size: 12px;
+    }
+  
+    #pending-table th, #pending-table td,
+    #history-table th, #history-table td {
+      padding: 8px;
+    }
+  
+    .btn-approve, .btn-reject {
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+  
+    h1, h2 {
+      font-size: 22px;
+      text-align: center;
+      color: black;
+    }
+  
+    .image h1 {
+      font-size: 20px;
+    }
+  
+    .sidebar {
+      width: 17rem;
+
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #pending-table, #history-table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  
+    .btn-approve, .btn-reject {
+      padding: 5px 7px;
+      font-size: 10px;
+    }
+  
+    .sidebar {
+      display: none;
+    }
+  
+    .burger-icon {
+      display: block;
+    }
+  
+    .content {
+      margin-left: 0;
+      padding: 10px;
+    }
+  
+    h1, h2 {
+      font-size: 20px;
+    }
+    .sidebar{
+        width: 100%;
+    }
+    .baselogo{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+  }
+.footer p{
+    color: black;
+}  

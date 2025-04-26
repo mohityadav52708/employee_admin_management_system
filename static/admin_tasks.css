@@ -11,9 +11,10 @@
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     
-    h1, h2 {
+    #Assign{
         text-align: center;
-        margin-bottom: 20px;
+        /* position: none; */
+        /* margin-bottom: 20px; */
     }
     
     form {
@@ -705,4 +706,74 @@
   .form-container h2{
     color: black;
   }
+}
+.card-header{
+  display: block;
+}
+.cardone .card-header #Assign{
+  text-align: center;
+  position: none;
+  /* margin-bottom: 20px; */
+}
+.loader-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.loader-overlay.active {
+  display: flex;
+}
+
+.loader-container {
+  text-align: center;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  animation: scaleIn 0.5s ease;
+}
+
+.fancy-spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid transparent;
+  border-top: 6px solid #00f0ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px #00f0ff, 0 0 30px #00f0ff;
+  margin: 0 auto 10px;
+}
+
+.loader-container p {
+  font-size: 16px;
+  margin-top: 5px;
+  color: #e0e0e0;
+  animation: fadeInText 0.8s ease-in;
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInText {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }

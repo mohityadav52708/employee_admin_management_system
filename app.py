@@ -15,7 +15,9 @@ import cloudinary.uploader
 from flask import send_file
 import pandas as pd
 from bson.objectid import ObjectId
+from bson import ObjectId
 import datetime
+from datetime import datetime, timedelta
 from datetime import datetime
 from io import BytesIO
 from flask_cors import CORS
@@ -296,31 +298,56 @@ def request_leave():
 @app.route('/admin-leave-requests', methods=['GET', 'POST'])
 def admin_leave_requests():
     if 'user' in session and session.get('role') == 'admin':
-        leave_requests = db.leave_requests.find({"status": "Pending"})
-        
-   
+        pending_leave_requests = db.leave_requests.find({"status": "Pending"})
+
+        # Now: Filter approved or rejected leaves of last 15 days
+        all_leave_requests = list(db.leave_requests.find({"status": {"$in": ["Approved", "Rejected"]}}))
+
+        # Prepare a list for recent leave history
+        recent_leave_history = []
+        today = datetime.today()
+        fifteen_days_ago = today - timedelta(days=15)
+
+        for leave in all_leave_requests:
+            try:
+                # Parse start_date string into datetime
+                leave_start_date = datetime.strptime(leave['start_date'], "%Y-%m-%d")
+
+                # Check if leave is in the last 15 days
+                if leave_start_date >= fifteen_days_ago:
+                    recent_leave_history.append(leave)
+
+            except Exception as e:
+                print(f"Error parsing leave start_date: {e}")
+
         if request.method == 'POST':
             leave_id = request.form['leave_id']
             action = request.form['action']
 
-            # Find the leave request and update the status
             leave_request = db.leave_requests.find_one({"_id": ObjectId(leave_id)})
-            if action == 'approve':
-                db.leave_requests.update_one({"_id": ObjectId(leave_id)}, {"$set": {"status": "Approved"}})
-                send_email(leave_request['employee_email'], "Leave Request Approved", f"Your leave request from {leave_request['start_date']} to {leave_request['end_date']} has been approved.")
-            elif action == 'reject':
-                db.leave_requests.update_one({"_id": ObjectId(leave_id)}, {"$set": {"status": "Rejected"}})
-                send_email(leave_request['employee_email'], "Leave Request Rejected", f"Your leave request from {leave_request['start_date']} to {leave_request['end_date']} has been rejected.")
-            
-            flash('Leave request processed successfully.', 'success')
-            return redirect(url_for('admin_leave_requests'))
+            if leave_request:
+                if action == 'approve':
+                    db.leave_requests.update_one({"_id": ObjectId(leave_id)}, {"$set": {"status": "Approved"}})
+                    send_email(leave_request['employee_email'], "Leave Request Approved",
+                               f"Your leave request from {leave_request['start_date']} to {leave_request['end_date']} has been approved.")
+                elif action == 'reject':
+                    db.leave_requests.update_one({"_id": ObjectId(leave_id)}, {"$set": {"status": "Rejected"}})
+                    send_email(leave_request['employee_email'], "Leave Request Rejected",
+                               f"Your leave request from {leave_request['start_date']} to {leave_request['end_date']} has been rejected.")
+
+                flash('Leave request processed successfully.', 'success')
+                return redirect(url_for('admin_leave_requests'))
+
         user = users_collection.find_one({"email": session['user']})
         username = user['username']
-        return render_template('admin_leave_requests.html', leave_requests=leave_requests,username=username)
+
+        return render_template('admin_leave_requests.html',
+                               leave_requests=pending_leave_requests,
+                               leave_history=recent_leave_history,
+                               username=username)
     else:
         flash('Access denied. Only admin can view leave requests.', 'danger')
         return redirect(url_for('login'))
-
 @app.route('/logout')
 def logout():
     if 'user' in session:
