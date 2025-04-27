@@ -660,7 +660,7 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     backdrop-filter: blur(3px) saturate(200%);
     -webkit-backdrop-filter: blur(3px) saturate(200%);
-    background-color: rgba(0, 4, 9, 0.7);
+    background-color: rgb(0 111 249 / 70%);
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.125);
     color: white;
