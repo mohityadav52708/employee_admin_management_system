@@ -1746,3 +1746,6 @@ canvas {
     align-items: center;
 }
 }
+svg{
+  margin-left: -10px;
+}

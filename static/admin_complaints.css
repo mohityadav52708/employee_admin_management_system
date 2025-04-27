@@ -242,4 +242,6 @@ th {
     font-size: 18px;
     color: #333;
   }
-  
+  svg{
+    margin-left: -10px;
+  }

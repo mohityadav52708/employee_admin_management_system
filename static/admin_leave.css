@@ -477,3 +477,6 @@ button[name="action"][value="reject"]:hover {
 .loader-container p{
 color: #000000;
 }
+svg{
+  margin-left: -10px;
+}

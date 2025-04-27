@@ -34,6 +34,7 @@
       <h2>Admin Dashboard</h2>
     </div>
     <div class="cover_of_sidebar_links">
+      <a href="{{url_for('admin_home')}}">
       <div class="sidelink">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -53,9 +54,10 @@
           <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
           <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
         </svg>
-        <a href="{{url_for('admin_home')}}">Dashboard</a>
+        Dashboard
       </div>
-
+    </a>
+    <a href="{{url_for('employee_details')}}">
       <div class="sidelink">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -73,9 +75,10 @@
           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
-        <a href="{{url_for('employee_details')}}">Employee Management</a>
+        Employee Management
       </div>
-
+    </a>
+    <a href="{{url_for('tasks')}}">
       <div class="sidelink">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -99,9 +102,10 @@
           <path d="M8 11h.01"></path>
           <path d="M8 16h.01"></path>
         </svg>
-        <a href="{{url_for('tasks')}}">Task Tracking</a>
+       Task Tracking
       </div>
-
+    </a>
+    <a href="{{ url_for('admin_leave_requests') }}">
       <div class="sidelink">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -121,9 +125,10 @@
           <rect width="18" height="18" x="3" y="4" rx="2"></rect>
           <path d="M3 10h18"></path>
         </svg>
-        <a href="{{ url_for('admin_leave_requests') }}">Leave Requests</a>
+        Leave Requests
       </div>
-
+    </a>
+    <a href="#">
       <div class="sidelink">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -142,9 +147,10 @@
           <line x1="12" x2="12" y1="20" y2="4"></line>
           <line x1="6" x2="6" y1="20" y2="14"></line>
         </svg>
-        <a href="#">Performance Reviews</a>
+       Performance Reviews
       </div>
-
+    </a>
+    <a href="#">
       <div class="sidelink">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -167,9 +173,10 @@
           <path d="M16 13H8"></path>
           <path d="M16 17H8"></path>
         </svg>
-        <a href="#">Reports</a>
+        Reports
       </div>
-
+    </a>
+    <a href="{{url_for('admin_complaints')}}">
       <div class="sidelink">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -193,8 +200,9 @@
           <path d="M8 11h.01"></path>
           <path d="M8 16h.01"></path>
         </svg>
-        <a href="{{url_for('admin_complaints')}}">Employee Reviews</a>
+        Employee Reviews
       </div>
+    </a>
     </div>
   </div>
 
