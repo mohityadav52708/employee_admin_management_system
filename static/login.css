@@ -1,0 +1,198 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: #fff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #ffffff;
+    color: #333;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    width: 350px;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 14px;
+    margin: 10px 0 5px;
+    color: #555;
+}
+
+.password-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+#email{
+    width: 93%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+.password-container input[type="password"],
+.password-container input[type="text"] {
+    width: 93%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
+
+.password-container input:focus {
+    border-color: #0072ff;
+    outline: none;
+}
+
+.password-container .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #777;
+}
+
+.password-container .toggle-password:hover {
+    color: #0072ff;
+}
+
+button {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(to right, #0072ff, #00c6ff);
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.form-footer a {
+    color: #0072ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+.portal-option {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.portal-option a {
+    text-decoration: none;
+    color: #0072ff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.portal-option a:hover {
+    text-decoration: underline;
+}
+
+    .loader-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in;
+    }
+    
+    .loader-overlay.active {
+      display: flex;
+    }
+    
+    .loader-container {
+      text-align: center;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      animation: scaleIn 0.5s ease;
+    }
+    
+    .fancy-spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid transparent;
+      border-top: 6px solid #00f0ff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 20px #00f0ff, 0 0 30px #00f0ff;
+      margin: 0 auto 10px;
+    }
+    
+    .loader-container p {
+      font-size: 16px;
+      margin-top: 5px;
+      color:#000000;
+      animation: fadeInText 0.8s ease-in;
+    }
+    
+    /* Animations */
+    @keyframes spin {
+      0% { transform: rotate(0); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes fadeInText {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    svg {
+      margin-left: -10px;
+    }
+    @media (max-width: 480px) {
+        .fancy-spinner{
+            width: 40px;
+            height: 40px;
+        }
+    }
