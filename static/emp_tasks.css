@@ -67,9 +67,6 @@ th {
     background-color: #007bff;
     color: white;
 }
-.image{
-    height: 5rem;
-}
 /* Responsive Table Styles */
 @media (max-width: 768px) {
     body{
@@ -130,5 +127,7 @@ th {
         font-size: 12px;
         padding: 8px 10px;
     }   
-    
+    .task-page #mobile,.burger-icon.new-close,.logout-btn.new-close{
+        margin-top: 10px;
+      }
 }
