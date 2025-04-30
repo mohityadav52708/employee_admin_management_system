@@ -59,6 +59,7 @@ table {
     margin-left: 270px;
     border-collapse: collapse;
     animation: fadeIn 1s ease-in-out;
+    background-color: #ffffff;
 }
 
 table th, table td {
@@ -85,7 +86,10 @@ table tr:nth-child(even) {
     margin-top: 20px;
     animation: fadeIn 1s ease-in-out;
 }
-
+.image #dekstop{
+    font-size: x-large;
+    color: black;
+}
 /* Animations */
 @keyframes fadeIn {
     from {
@@ -104,4 +108,3 @@ table tr:nth-child(even) {
         font-size: 8px;
 }
 }
-

@@ -4,14 +4,14 @@ body {
     margin: 0;
 }
 .containerone {
-    max-width: 600px;
+    max-width: 100%;
     margin: 0px auto;
     padding: 30px;
     background-color: #fff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     animation: fadeIn 1s ease-out;
-    margin-left: 500px;
+    margin-left: 270px;
 
 }
 h2 {
@@ -81,7 +81,20 @@ button:hover {
 .history-table tr:hover {
     background-color: #ecf0f1;
 }
-
+.sidebar h2{
+    margin-bottom: 0px;
+}
+.content .header{
+    display: flex;
+    justify-content: center;
+}
+.content .header h1{
+    text-align: center;
+    color: black;
+}
+.content{
+    margin-bottom: -40px;
+}
 @keyframes fadeIn {
     0% { opacity: 0; }
     100% { opacity: 1; }
@@ -103,6 +116,7 @@ button:hover {
         font-size: 12px;
         padding: 8px;
     }
+  
 }
 
 @media (max-width: 480px) {
@@ -120,4 +134,10 @@ button:hover {
         font-size: 7px;
         padding:5px;
     }
+    .image{
+        height: 5rem;
+    }
+}
+.image #dekstop{
+    font-size: x-large;
 }

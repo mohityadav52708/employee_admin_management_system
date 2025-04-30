@@ -6,31 +6,183 @@
     <title>Complaints</title>
     <link rel="stylesheet" href="../static/home.css" />
     <link rel="stylesheet" href="../static/employee_complaints.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../static/home.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <style></style>
   <body>
-    <div class="image">
-      <h1 id="mobile">
-        Welcome Back ,<br />
-        {{username}}
-      </h1>
+    <div class="image" style="height:5rem;">
+
+      <h1 id="mobile">Welcome Back ,<br> {{username}}</h1>
       <h1 id="dekstop">Welcome Back , {{username}}</h1>
       <div class="burger-icon open" id="burgerIcon">&#9776;</div>
       <div class="burger-icon close" id="burgerIconClose">&#10006;</div>
-      <a href="/logout" class="logout-btn">Logout</a>
-    </div>
-    <div class="sidebar" id="sidebar">
-      <h2>Employee Dashboard</h2>
-      <a href="{{url_for('home')}}">Dashboard</a>
-      <a href="{{url_for('profile')}}">Profile</a>
-      <a href="{{url_for('tasks')}}">Task Management</a>
-      <a href="{{ url_for('request_leave') }}">Leave Management</a>
-      <a href="#">Learning & Development</a>
-      <a href="#">Attendance</a>
-      <a href="{{url_for('complaints')}}">Reviews</a>
+      <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>&nbsp;&nbsp;Logout</a>
+  </div>
+  <div class="sidebar" id="sidebar">
+      <div class="baselogo">
+        <div class="logonew-icon">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2>Employee Dashboard</h2>
+      </div>
+      <div class="cover_of_sidebar_links">
+        <a href="{{url_for('home')}}">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-home"
+            >
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Dashboard
+          </div>
+        </a>
+        <a href="{{ url_for('profile') }}">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-user"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Profile
+          </div>
+        </a>
+        <a href="{{url_for('tasks')}}">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-clipboard-list"
+            >
+              <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+              <path
+                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+              ></path>
+              <path d="M12 11h4"></path>
+              <path d="M12 16h4"></path>
+              <path d="M8 11h.01"></path>
+              <path d="M8 16h.01"></path>
+            </svg>
+            Task Management
+          </div>
+        </a>
+        <a href="{{ url_for('request_leave') }}">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-calendar"
+            >
+              <path d="M8 2v4"></path>
+              <path d="M16 2v4"></path>
+              <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+              <path d="M3 10h18"></path>
+            </svg>
+            Leave Management
+          </div>
+        </a>
+        <a href="#">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-graduation-cap"
+            >
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+              <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+            </svg>
+            Learning & Development
+          </div>
+        </a>
+        <a href="#">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-clock"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Attendance
+          </div>
+        </a>
+        <a href="{{url_for('complaints')}}">
+          <div class="sidelink nav-item active">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-message-square"
+            >
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              ></path>
+            </svg>
+            Reviews
+          </div>
+        </a>
+        
+      </div>
     </div>
     <div class="content">
-      <div class="header"></div>
+      
     </div>
     <h2>Submit a Complaint</h2>
     <form method="POST" action="{{ url_for('complaints') }}">

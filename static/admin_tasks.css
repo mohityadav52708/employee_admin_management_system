@@ -753,7 +753,7 @@
 .loader-container p {
   font-size: 16px;
   margin-top: 5px;
-  color: #e0e0e0;
+  color: #000000;
   animation: fadeInText 0.8s ease-in;
 }
 

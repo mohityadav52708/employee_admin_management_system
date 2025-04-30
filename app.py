@@ -51,11 +51,25 @@ def allowed_file(filename):
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
     if 'user' not in session:
-       
         flash("Please log in to update your profile.", "danger")
         return redirect(url_for('login'))
 
     user = users_collection.find_one({"email": session['user']})
+
+    # Fetch notifications from home route logic
+    user_email = session['user']
+
+    task_status_counts = {
+        "Pending": db.tasks.count_documents({"employee_email": user_email, "status": "Pending"})
+    }
+
+    leave_status_counts = {
+        "Pending": db.leave_requests.count_documents({"employee_email": user_email, "status": "Pending"})
+    }
+
+    review_status_counts = {
+        "Pending": db.complaints.count_documents({"employee_email": user_email, "status": "Pending"})
+    }
 
     if request.method == 'POST':
         username = request.form['username']
@@ -79,12 +93,17 @@ def profile():
         # ✅ Update User in MongoDB
         users_collection.update_one({"email": session['user']}, {"$set": update_data})
         user = users_collection.find_one({"email": session['user']})
-        username = user['username']
         flash("Profile updated successfully!", "success")
         return redirect(url_for('profile'))
 
-    return render_template('profile.html', user=user,username=user.get('username', 'User')) 
-
+    return render_template(
+        'profile.html',
+        user=user,
+        username=user.get('username', 'User'),
+        task_status_counts=task_status_counts,
+        leave_status_counts=leave_status_counts,
+        review_status_counts=review_status_counts
+    )
 
 @app.route('/admin/employees')
 def admin_employees():
@@ -491,7 +510,8 @@ def home():
             attendance_records=attendance_records,
             task_status_counts=task_status_counts,
             leave_status_counts=leave_status_counts,
-            review_status_counts=review_status_counts
+            review_status_counts=review_status_counts,
+            active_page='home'
         )
     else:
         flash('Access denied. Please log in as an employee.', 'danger')

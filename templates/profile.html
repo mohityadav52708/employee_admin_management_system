@@ -1,124 +1,548 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile Update</title>
-    <link rel="stylesheet" href="../static/home.css">
-    <link rel="stylesheet" href="../static/profile.css">
-</head>
-<style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color:rgb(0, 0, 0);
-    }
-    
-    .container {
-        width: 50%;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-    }
-    
-    h2 {
-        color: #1f2937;
-    }
-    .profile-pic{
-        display:flex;
-        flex-direction:column;
-
-    }
-    .profile-pic img {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #2563eb;
-        margin-bottom: 10px;
-    }
-    
-    input, button {
-        width: 100%;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 6px;
-        border: 1px solid #ddd;
-    }
-    
-    button {
-        background-color: #2563eb;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-    
-    button:hover {
-        background-color: #1e3a8a;
-    }
-    .profile-image img{
-        width:300px;
-        height:auto;
-    }
-    form{
-        color:#000000;
-    }
-</style>
-<body>
+    <link rel="stylesheet" href="../static/profile.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../static/home.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <style></style>
+  <body>
     <div class="image">
+      <h1 id="dekstop">Welcome Back, {{username}}</h1>
+      <div class="burger-icon open" id="burgerIcon">&#9776;</div>
+      <div class="burger-icon close" id="burgerIconClose">&#10006;</div>
 
-        <h1 id="dekstop">Welcome Back , {{username}}</h1>
-        <div class="burger-icon open" id="burgerIcon">&#9776;</div>
-        <div class="burger-icon close" id="burgerIconClose">&#10006;</div>
-        
-        <div class="profile-section">
-          <img src="{{ user.profile_image if user.profile_image else url_for('static', filename='default-profile.png') }}" 
-              alt="Profile Image" class="profile-img">
+      <!-- Search Bar -->
+      
+
+      <div class="profile-section">
+        <img
+          src="{{ user.profile_image if user.profile_image else url_for('static', filename='default-profile.png') }}"
+          alt="Profile Image"
+          class="profile-img"
+        />
       </div>
-        <a href="/logout" class="logout-btn">Logout</a>
+
+      <div class="notification-bar">
+        <div
+          class="notification-icon"
+          onclick="toggleDropdown('notificationDropdown')"
+        >
+          <i class="fa-solid fa-bell"></i>
+          {% set total_alerts = (task_status_counts['Pending'] if
+          task_status_counts else 0) + (leave_status_counts['Pending'] if
+          leave_status_counts else 0) + (review_status_counts['Pending'] if
+          review_status_counts else 0) %} {% if total_alerts > 0 %}
+          <span class="badge">{{ total_alerts }}</span>
+          {% endif %}
+        </div>
+
+        <div id="notificationDropdown" class="notification-dropdown">
+          <h4>Your Notifications</h4>
+          <ul>
+            {% if task_status_counts and task_status_counts['Pending'] > 0 %}
+            <li>
+              <a href="{{ url_for('tasks') }}"
+                >📝 You have {{ task_status_counts['Pending'] }} pending
+                task(s)</a
+              >
+            </li>
+            {% endif %} {% if leave_status_counts and
+            leave_status_counts['Pending'] > 0 %}
+            <li>
+              <a href="{{ url_for('request_leave') }}"
+                >🛫 {{ leave_status_counts['Pending'] }} leave request(s)
+                awaiting review</a
+              >
+            </li>
+            {% endif %} {% if review_status_counts and
+            review_status_counts['Pending'] > 0 %}
+            <li>
+              <a href="{{ url_for('complaints') }}"
+                >📣 {{ review_status_counts['Pending'] }} complaint(s)
+                pending</a
+              >
+            </li>
+            {% endif %} {% if total_alerts == 0 %}
+            <li>No pending notifications ✅</li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+
+      <a href="/logout" class="logout-btn"
+        ><i class="fa-solid fa-right-from-bracket"></i>&nbsp;Logout</a
+      >
     </div>
     <div class="sidebar" id="sidebar">
+      <div class="baselogo">
+        <div class="logonew-icon">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
         <h2>Employee Dashboard</h2>
-        <a href="{{url_for('home')}}">Dashboard</a>
-        <a href="{{ url_for('profile') }}">Profile</a>
-          <a href="{{url_for('tasks')}}">Task Management</a>
-          <a href="{{ url_for('request_leave') }}">Leave Management</a>
-          <a href="#">Learning & Development</a>
-          <a href="#">Attendance</a>
-          <a href="{{url_for('complaints')}}">Reviews</a>
+      </div>
+      <div class="cover_of_sidebar_links">
+        <a href="{{url_for('home')}}">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-home"
+            >
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Dashboard
+          </div>
+        </a>
+        <a href="{{ url_for('profile')}}">
+          <div class="sidelink nav-item active">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-user"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Profile
+          </div>
+        </a>
+        <a href="{{url_for('tasks')}}">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-clipboard-list"
+            >
+              <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+              <path
+                d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"
+              ></path>
+              <path d="M12 11h4"></path>
+              <path d="M12 16h4"></path>
+              <path d="M8 11h.01"></path>
+              <path d="M8 16h.01"></path>
+            </svg>
+            Task Management
+          </div>
+        </a>
+        <a href="{{ url_for('request_leave') }}">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-calendar"
+            >
+              <path d="M8 2v4"></path>
+              <path d="M16 2v4"></path>
+              <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+              <path d="M3 10h18"></path>
+            </svg>
+            Leave Management
+          </div>
+        </a>
+        <a href="#">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-graduation-cap"
+            >
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+              <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+            </svg>
+            Learning & Development
+          </div>
+        </a>
+        <a href="#">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-clock"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Attendance
+          </div>
+        </a>
+        <a href="{{url_for('complaints')}}">
+          <div class="sidelink">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-message-square"
+            >
+              <path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+              ></path>
+            </svg>
+            Reviews
+          </div>
+        </a>
+      </div>
     </div>
-    <div class="container">
+    <div class="cover-of-profile-container">
+        <h1 id="mobile">Welcome Back, {{username}}</h1>
+      <div class="container">
         <h2>Update Profile</h2>
 
         <div class="profile-image">
-            {% if user.profile_image %}
-                <img src="{{ user.profile_image }}" alt="Profile Image">
-            {% else %}
-                <img src="{{ url_for('static', filename='default-profile.png') }}" alt="Default Profile">
-            {% endif %}
+          {% if user.profile_image %}
+          <img src="{{ user.profile_image }}" alt="Profile Image" />
+          {% else %}
+          <img
+            src="{{ url_for('static', filename='default-profile.png') }}"
+            alt="Default Profile"
+          />
+          {% endif %}
         </div>
 
-        <form action="{{ url_for('profile') }}" method="POST" enctype="multipart/form-data">
-            <label>Username:</label>
-            <input type="text" name="username" value="{{ user.username }}" required>
+        <form
+          action="{{ url_for('profile') }}"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <label>Username:</label>
+          <input
+            type="text"
+            name="username"
+            value="{{ user.username }}"
+            required
+          />
 
-            <label>Department:</label>
-            <input type="text" name="department" value="{{ user.department if user.department else '' }}" required>
+          <label>Department:</label>
+          <input
+            type="text"
+            name="department"
+            value="{{ user.department if user.department else '' }}"
+            required
+          />
 
-            <label>Phone Number:</label>
-            <input type="text" name="phone" value="{{ user.phone if user.phone else '' }}" required>
+          <label>Phone Number:</label>
+          <input
+            type="text"
+            name="phone"
+            value="{{ user.phone if user.phone else '' }}"
+            required
+          />
 
-            <label>Upload Profile Image:</label>
-            <input type="file" name="profile_image" accept="image/*">
+          <label>Upload Profile Image:</label>
+          <input type="file" name="profile_image" accept="image/*" />
 
-            <button type="submit">Update Profile</button>
+          <button type="submit">Update Profile</button>
         </form>
+      </div>
     </div>
-</body>
+    <script>
+      // JavaScript for toggling sidebar visibility
+      const burgerIcon = document.getElementById("burgerIcon");
+      const burgerIconClose = document.getElementById("burgerIconClose");
+      const sidebar = document.getElementById("sidebar");
+
+      burgerIcon.addEventListener("click", () => {
+        sidebar.classList.add("show");
+        burgerIcon.style.display = "none";
+        burgerIconClose.style.display = "block";
+      });
+
+      burgerIconClose.addEventListener("click", () => {
+        sidebar.classList.remove("show");
+        burgerIcon.style.display = "block";
+        burgerIconClose.style.display = "none";
+      });
+
+      // Notification dropdown toggle
+      function toggleDropdown(id) {
+        const dropdown = document.getElementById(id);
+        dropdown.style.display =
+          dropdown.style.display === "block" ? "none" : "block";
+      }
+
+      // Search functionality
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchInput");
+        const searchResults = document.getElementById("searchResults");
+        const resultsContainer = document.getElementById("resultsContainer");
+
+        // Sample data for search (in a real app, this would come from the backend)
+        const searchData = [
+          {
+            type: "task",
+            title: "Complete Project Documentation",
+            status: "Pending",
+            url: "/tasks",
+          },
+          {
+            type: "task",
+            title: "Review Code Changes",
+            status: "In Progress",
+            url: "/tasks",
+          },
+          {
+            type: "leave",
+            title: "Annual Leave Request",
+            status: "Approved",
+            url: "/request_leave",
+          },
+          {
+            type: "review",
+            title: "Performance Review Q2",
+            status: "Completed",
+            url: "/complaints",
+          },
+        ];
+
+        searchInput.addEventListener("input", function () {
+          const query = this.value.toLowerCase();
+
+          if (query.length < 2) {
+            searchResults.style.display = "none";
+            return;
+          }
+
+          const filteredResults = searchData.filter(
+            (item) =>
+              item.title.toLowerCase().includes(query) ||
+              item.type.toLowerCase().includes(query) ||
+              item.status.toLowerCase().includes(query)
+          );
+
+          if (filteredResults.length > 0) {
+            resultsContainer.innerHTML = "";
+            filteredResults.forEach((item) => {
+              const resultItem = document.createElement("div");
+              resultItem.className = "result-item";
+              resultItem.innerHTML = `
+                  <div class="result-icon ${item.type}-icon">
+                    <i class="fa-solid ${getIconForType(item.type)}"></i>
+                  </div>
+                  <div class="result-content">
+                    <h4>${item.title}</h4>
+                    <p>${capitalizeFirstLetter(item.type)} - ${item.status}</p>
+                  </div>
+                `;
+              resultItem.addEventListener("click", function () {
+                window.location.href = item.url;
+              });
+              resultsContainer.appendChild(resultItem);
+            });
+            searchResults.style.display = "block";
+          } else {
+            resultsContainer.innerHTML =
+              "<p class='no-results'>No results found</p>";
+            searchResults.style.display = "block";
+          }
+        });
+
+        // Hide search results when clicking outside
+        document.addEventListener("click", function (event) {
+          if (
+            !searchInput.contains(event.target) &&
+            !searchResults.contains(event.target)
+          ) {
+            searchResults.style.display = "none";
+          }
+        });
+
+        // Helper functions
+        function getIconForType(type) {
+          switch (type) {
+            case "task":
+              return "fa-clipboard-list";
+            case "leave":
+              return "fa-calendar";
+            case "review":
+              return "fa-comment";
+            default:
+              return "fa-file";
+          }
+        }
+
+        function capitalizeFirstLetter(string) {
+          return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+      });
+
+      // Toast notification function
+      function showToast(message, type = "info") {
+        const toast = document.createElement("div");
+        toast.className = `toast toast-${type}`;
+
+        const icon = document.createElement("i");
+        icon.className = `fa-solid ${getToastIcon(type)}`;
+
+        const textSpan = document.createElement("span");
+        textSpan.textContent = message;
+
+        toast.appendChild(icon);
+        toast.appendChild(textSpan);
+
+        const toastContainer = document.getElementById("toastContainer");
+        toastContainer.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => {
+          toast.classList.add("show");
+        }, 10);
+
+        // Remove after 5 seconds
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => {
+            toastContainer.removeChild(toast);
+          }, 300);
+        }, 5000);
+      }
+
+      function getToastIcon(type) {
+        switch (type) {
+          case "success":
+            return "fa-check-circle";
+          case "error":
+            return "fa-exclamation-circle";
+          case "warning":
+            return "fa-exclamation-triangle";
+          default:
+            return "fa-info-circle";
+        }
+      }
+
+      // Initialize charts
+      document.addEventListener("DOMContentLoaded", function () {
+        // Task completion chart
+        const taskCtx = document.getElementById("taskChart").getContext("2d");
+        const taskChart = new Chart(taskCtx, {
+          type: "doughnut",
+          data: {
+            labels: ["Completed", "In Progress", "Pending"],
+            datasets: [
+              {
+                data: [65, 20, 15],
+                backgroundColor: [
+                  "rgba(34, 197, 94, 0.8)",
+                  "rgba(59, 130, 246, 0.8)",
+                  "rgba(245, 158, 11, 0.8)",
+                ],
+                borderColor: [
+                  "rgba(34, 197, 94, 1)",
+                  "rgba(59, 130, 246, 1)",
+                  "rgba(245, 158, 11, 1)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+              },
+            },
+            animation: {
+              animateScale: true,
+              animateRotate: true,
+            },
+          },
+        });
+
+        // Attendance chart
+        const attendanceCtx = document
+          .getElementById("attendanceChart")
+          .getContext("2d");
+        const attendanceChart = new Chart(attendanceCtx, {
+          type: "bar",
+          data: {
+            labels: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+            datasets: [
+              {
+                label: "Hours Worked",
+                data: [8.5, 9, 7.5, 8, 6],
+                backgroundColor: "rgba(139, 92, 246, 0.8)",
+                borderColor: "rgba(139, 92, 246, 1)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 10,
+              },
+            },
+          },
+        });
+      });
+    </script>
+  </body>
 </html>

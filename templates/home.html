@@ -4,34 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Employee Dashboard</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../static/home.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
   <body>
-    <!-- Burger Icon for Mobile -->
+    <!-- Top Navigation Bar -->
     <div class="image">
-      <h1 id="dekstop">Welcome Back , {{username}}</h1>
+      <h1 id="dekstop">Welcome Back, {{username}}</h1>
       <div class="burger-icon open" id="burgerIcon">&#9776;</div>
       <div class="burger-icon close" id="burgerIconClose">&#10006;</div>
 
-      <div class="profile-section">
-        <img
-          src="{{ user.profile_image if user.profile_image else url_for('static', filename='default-profile.png') }}"
-          alt="Profile Image"
-          class="profile-img"
-        />
+      <!-- Search Bar -->
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search tasks, leaves, reviews..." />
+        <button class="search-btn"><i class="fa-solid fa-search"></i></button>
       </div>
+
+      <div class="profile-section">
+        <img src="{{ user.profile_image if user.profile_image else url_for('static', filename='default-profile.png') }}" alt="Profile Image" class="profile-img" />
+      </div>
+      
       <div class="notification-bar">
         <div class="notification-icon" onclick="toggleDropdown('notificationDropdown')">
           <i class="fa-solid fa-bell"></i>
@@ -71,98 +66,261 @@
         </div>
       </div>
       
-      <a href="/logout" class="logout-btn">Logout</a>
+      <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>&nbsp;Logout</a>
     </div>
+
+    <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
-      <h2>Employee Dashboard</h2>
-      <a href="{{url_for('home')}}">Dashboard</a>
-      <a href="{{ url_for('profile') }}">Profile</a>
-      <a href="{{url_for('tasks')}}">Task Management</a>
-      <a href="{{ url_for('request_leave') }}">Leave Management</a>
-      <a href="#">Learning & Development</a>
-      <a href="#">Attendance</a>
-      <a href="{{url_for('complaints')}}">Reviews</a>
+      <div class="baselogo">
+        <div class="logonew-icon">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2>Employee Dashboard</h2>
+      </div>
+      <div class="cover_of_sidebar_links">
+        <a href="{{url_for('home')}}">
+          <div class="sidelink nav-item active ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home">
+              <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Dashboard
+          </div>
+        </a>
+        <a href="{{ url_for('profile') }}">
+          <div class="sidelink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Profile
+          </div>
+        </a>
+        <a href="{{url_for('tasks')}}">
+          <div class="sidelink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list">
+              <rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect>
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <path d="M12 11h4"></path>
+              <path d="M12 16h4"></path>
+              <path d="M8 11h.01"></path>
+              <path d="M8 16h.01"></path>
+            </svg>
+            Task Management
+          </div>
+        </a>
+        <a href="{{ url_for('request_leave') }}">
+          <div class="sidelink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
+              <path d="M8 2v4"></path>
+              <path d="M16 2v4"></path>
+              <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+              <path d="M3 10h18"></path>
+            </svg>
+            Leave Management
+          </div>
+        </a>
+        <a href="#">
+          <div class="sidelink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+              <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path>
+            </svg>
+            Learning & Development
+          </div>
+        </a>
+        <a href="#">
+          <div class="sidelink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            Learning & Development
+          </div>
+        </a>
+        <a href="{{url_for('complaints')}}">
+          <div class="sidelink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            Reviews
+          </div>
+        </a>
+      </div>
     </div>
+
+    <!-- Main Content -->
     <div class="content">
-      <h1 id="mobile">Welcome Back ,{{username}}</h1>
+      <h1 id="mobile">Welcome Back, {{username}}</h1>
+      
+      <!-- Search Results Container -->
+      <div id="searchResults" class="search-results">
+        <h3>Search Results</h3>
+        <div id="resultsContainer"></div>
+      </div>
+      
       <!-- Dashboard Cards -->
       <div class="container">
         <!-- Task Automation -->
         <div class="card">
-          <h3>Task Automation</h3>
-          <p>
-            Automated task allocation based on project needs and employee
-            skills.
+          <div class="card-gradient card-gradient-purple"></div>
+          <div class="card-header">
+            <div class="card-icon card-icon-purple">
+              <i class="fa-solid fa-tasks"></i>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+          <h3 class="card-title">Task Automation</h3>
+          <p class="card-description">
+            Automated task allocation based on project needs and employee skills.
           </p>
-          <a href="{{url_for('tasks')}}" class="btn">Manage Tasks</a>
+          <div class="card-footer">
+            <a href="{{url_for('tasks')}}" class="btn">
+              <button class="card-button card-button-purple">
+                Manage Tasks
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </a>
+          </div>
         </div>
 
         <!-- Personalized Learning -->
-        <div class="card">
-          <h3>Learning & Development</h3>
-          <p>Personalized training suggestions for skill enhancement.</p>
-          <a href="#" class="btn">Start Learning</a>
-        </div>
+        
 
         <!-- Reviews Box -->
         <div class="card">
-          <h3>Employee Reviews</h3>
-          <p>
-            Provide feedback and view performance reviews from managers and
-            peers.
+          <div class="card-gradient card-gradient-pink"></div>
+          <div class="card-header">
+            <div class="card-icon card-icon-pink">
+              <i class="fa-solid fa-comment-dots"></i>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+          <h3 class="card-title">Employee Reviews</h3>
+          <p class="card-description">
+            Provide feedback and view performance reviews from managers and peers.
           </p>
-          <a href="{{url_for('complaints')}}" class="btn">View Reviews</a>
+          <div class="card-footer">
+            <a href="{{url_for('complaints')}}" class="btn">
+              <button class="card-button card-button-pink">
+                View Reviews
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </a>
+          </div>
         </div>
-      </div>
+      
 
-      <!-- More Cards Section -->
-      <div class="container">
+      
         <!-- Sentiment Analysis -->
         <div class="card">
-          <h3>Employee Sentiment</h3>
-          <p>Analyze feedback and reviews to gauge employee satisfaction.</p>
-          <a href="#" class="btn">Analyze Sentiment</a>
+          <div class="card-gradient card-gradient-cyan"></div>
+          <div class="card-header">
+            <div class="card-icon card-icon-cyan">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+          <h3 class="card-title">Employee Sentiment</h3>
+          <p class="card-description">Analyze feedback and reviews to gauge employee satisfaction.</p>
+          <div class="card-footer">
+            <a href="#" class="btn">
+              <button class="card-button card-button-cyan">
+                Analyze Sentiment
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </a>
+          </div>
         </div>
 
         <!-- Workload Management -->
         <div class="card">
-          <h3>Workload Management</h3>
-          <p>Monitor and balance workloads across your team effectively.</p>
-          <a href="#" class="btn">Manage Workloads</a>
+          <div class="card-gradient card-gradient-emerald"></div>
+          <div class="card-header">
+            <div class="card-icon card-icon-emerald">
+              <i class="fa-solid fa-balance-scale"></i>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+          <h3 class="card-title">Workload Management</h3>
+          <p class="card-description">Monitor and balance workloads across your team effectively.</p>
+          <div class="card-footer">
+            <a href="#" class="btn">
+              <button class="card-button card-button-emerald">
+                Manage Workloads
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </a>
+          </div>
         </div>
 
         <!-- Face Recognition Attendance -->
         <div class="card">
-          <h3>Attendance Tracking</h3>
-          <p>Mark attendance using face recognition technology.</p>
-          <a href="#" class="btn">Mark Attendance</a>
+          <div class="card-gradient card-gradient-amber"></div>
+          <div class="card-header">
+            <div class="card-icon card-icon-amber">
+              <i class="fa-solid fa-id-card"></i>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+          <h3 class="card-title">Learning & Development</h3>
+          <p class="card-description">Personalized training suggestions for skill enhancement.</p>
+          <div class="card-footer">
+            <a href="#" class="btn">
+              <button class="card-button card-button-amber">
+                Start Learning
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </a>
+          </div>
         </div>
-      </div>
+      
 
-      <!-- Dynamic Leave Management -->
-      <div class="container">
         <div class="card">
-          <h3>Leave Management</h3>
-          <p>Request, approve, and track leave applications dynamically.</p>
-          <a href="{{url_for('request_leave')}}" class="btn">Manage Leaves</a>
+          <div class="card-gradient card-gradient-purple"></div>
+          <div class="card-header">
+            <div class="card-icon card-icon-purple">
+              <i class="fa-solid fa-plane-departure"></i>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+          <h3 class="card-title">Leave Management</h3>
+          <p class="card-description">Request, approve, and track leave applications dynamically.</p>
+          <div class="card-footer">
+            <a href="{{url_for('request_leave')}}" class="btn">
+              <button class="card-button card-button-purple">
+                Manage Leaves
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </a>
+          </div>
         </div>
       </div>
 
+      <!-- Analytics Section -->
+      
       <!-- Footer Section -->
       <div class="footer">
         <p>&copy; 2025 Employee Management System. All Rights Reserved.</p>
       </div>
     </div>
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %}
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} 
+    {% if messages %}
     <script>
       window.onload = function() {
-          {% for category, message in messages %}
-              alert("{{ message }}");
-          {% endfor %}
+        {% for category, message in messages %}
+          showToast("{{ message }}", "{{ category }}");
+        {% endfor %}
       };
     </script>
-    {% endif %} {% endwith %}
+    {% endif %} 
+    {% endwith %}
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
     <script>
       // JavaScript for toggling sidebar visibility
       const burgerIcon = document.getElementById("burgerIcon");
@@ -181,43 +339,127 @@
         burgerIconClose.style.display = "none";
       });
 
-      document.addEventListener("DOMContentLoaded", function () {
-        const availabilityBtn = document.getElementById("availabilityToggle");
-
-        // Fetch initial availability status
-        fetch("/get-availability")
-          .then((response) => response.json())
-          .then((data) => {
-            availabilityBtn.textContent = data.available
-              ? "Available"
-              : "Not Available";
-            availabilityBtn.style.backgroundColor = data.available
-              ? "green"
-              : "red";
-          });
-
-        // Toggle availability status
-        availabilityBtn.addEventListener("click", function () {
-          fetch("/toggle-availability", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              availabilityBtn.textContent = data.available
-                ? "Available"
-                : "Not Available";
-              availabilityBtn.style.backgroundColor = data.available
-                ? "green"
-                : "red";
-            });
-        });
-      });
+      // Notification dropdown toggle
       function toggleDropdown(id) {
         const dropdown = document.getElementById(id);
-        dropdown.style.display =
-          dropdown.style.display === "block" ? "none" : "block";
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
       }
+
+      // Search functionality
+      function debounce(func, delay) {
+        let timeout;
+        return function () {
+          const context = this;
+          const args = arguments;
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+      }
+      
+      const searchInput = document.getElementById("searchInput");
+      const resultsContainer = document.getElementById("resultsContainer");
+      const searchResults = document.getElementById("searchResults");
+      
+      // Simulated searchable data - extend this list with real entries
+      const searchableItems = [
+        { title: "Task Automation", link: "{{ url_for('tasks') }}" },
+        { title: "Employee Reviews", link: "{{ url_for('complaints') }}" },
+        { title: "Leave Management", link: "{{ url_for('request_leave') }}" },
+        { title: "Profile", link: "{{ url_for('profile') }}" },
+        { title: "Dashboard", link: "{{ url_for('home') }}" },
+      ];
+      
+      function filterResults() {
+        const query = searchInput.value.trim().toLowerCase();
+        resultsContainer.innerHTML = ""; // clear old results
+      
+        if (!query) {
+          searchResults.style.display = "none";
+          return;
+        }
+      
+        const matches = searchableItems.filter(item =>
+          item.title.toLowerCase().includes(query)
+        );
+      
+        if (matches.length > 0) {
+          matches.forEach(item => {
+            const div = document.createElement("div");
+            div.innerHTML = `<a href="${item.link}" class="result-item">${item.title}</a>`;
+            resultsContainer.appendChild(div);
+          });
+        } else {
+          resultsContainer.innerHTML = `<p style="color: gray; padding: 10px;">No matching results found.</p>`;
+        }
+      
+        searchResults.style.display = "block";
+      }
+      
+      searchInput.addEventListener("input", debounce(filterResults, 300));
+      // Initialize charts
+      document.addEventListener("DOMContentLoaded", function() {
+        // Task completion chart
+        const taskCtx = document.getElementById('taskChart').getContext('2d');
+        const taskChart = new Chart(taskCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Completed', 'In Progress', 'Pending'],
+            datasets: [{
+              data: [65, 20, 15],
+              backgroundColor: [
+                'rgba(34, 197, 94, 0.8)',
+                'rgba(59, 130, 246, 0.8)',
+                'rgba(245, 158, 11, 0.8)'
+              ],
+              borderColor: [
+                'rgba(34, 197, 94, 1)',
+                'rgba(59, 130, 246, 1)',
+                'rgba(245, 158, 11, 1)'
+              ],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+              }
+            },
+            animation: {
+              animateScale: true,
+              animateRotate: true
+            }
+          }
+        });
+        
+        // Attendance chart
+        const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+        const attendanceChart = new Chart(attendanceCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+            datasets: [{
+              label: 'Hours Worked',
+              data: [8.5, 9, 7.5, 8, 6],
+              backgroundColor: 'rgba(139, 92, 246, 0.8)',
+              borderColor: 'rgba(139, 92, 246, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 10
+              }
+            }
+          }
+        });
+      });
     </script>
   </body>
 </html>
