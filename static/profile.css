@@ -1139,3 +1139,28 @@ button[type="submit"]:hover {
     transform: rotate(360deg);
   }
 }
+/* Add this style for the success popup */
+.success-popup {
+  position: fixed;
+  top: 170px;
+  right: 20px;
+  background-color: #4CAF50;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  transform: translateX(150%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.success-popup.show {
+  transform: translateX(0);
+}
+
+.success-popup i {
+  margin-right: 10px;
+  font-size: 20px;
+}

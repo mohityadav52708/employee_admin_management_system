@@ -18,9 +18,12 @@
     />
     <link rel="stylesheet" href="../static/home.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
   </head>
-  <style></style>
+  
   <body>
+  
+
     <div class="image">
       <h1 id="dekstop">Welcome Back, {{username}}</h1>
       <div class="burger-icon open" id="burgerIcon">&#9776;</div>
@@ -299,6 +302,11 @@
         </form>
       </div>
     </div>
+     <!-- Success Popup Element -->
+     <div id="successPopup" class="success-popup">
+      <i class="fas fa-check-circle"></i>
+      <span>Profile updated successfully!</span>
+    </div>
     <div id="loader" class="loader-overlay" style="display: none;">
       <div class="loader"></div>
       <br>
@@ -548,13 +556,46 @@
           },
         });
       });
+      
+      // Form submission with loader and success popup
       const form = document.querySelector("form");
       const loader = document.getElementById("loader");
+      const successPopup = document.getElementById("successPopup");
     
-      form.addEventListener("submit", function () {
-        loader.style.display = "flex"; // Show loader
+      form.addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent default form submission for demo
+        
+        // Show loader
+        loader.style.display = "flex";
+        
+        // Simulate form submission with a delay (replace with actual form submission)
+        setTimeout(() => {
+          // Hide loader after processing
+          loader.style.display = "none";
+          
+          // Show success popup
+          successPopup.classList.add("show");
+          
+          // Hide popup after 3 seconds
+          setTimeout(() => {
+            successPopup.classList.remove("show");
+            
+            // Submit the form after showing the popup (remove this if you're handling submission differently)
+            form.submit();
+          }, 3000);
+        }, 2000); // Simulate 2 seconds processing time
       });
     
+      // Function to show success popup (can be called from other places too)
+      function showSuccessPopup(message = "Profile updated successfully!") {
+        const popup = document.getElementById("successPopup");
+        popup.querySelector("span").textContent = message;
+        popup.classList.add("show");
+        
+        setTimeout(() => {
+          popup.classList.remove("show");
+        }, 3000);
+      }
     </script>
   </body>
 </html>

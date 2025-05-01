@@ -305,7 +305,7 @@ def request_leave():
                 send_email(admin['email'], "New Leave Request", f"A new leave request has been made by {session['user']}. Please review it.")
             
             flash('Leave request submitted successfully!', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('request_leave'))
             
         # Render the page with the leave requests
         return render_template('request_leave.html', leave_requests=leave_requests_list,username=username)

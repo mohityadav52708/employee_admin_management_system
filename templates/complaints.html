@@ -11,17 +11,24 @@
     <link rel="stylesheet" href="../static/home.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
-  <style></style>
+  <style>
+    
+</style>
   <body>
-    <div class="image" style="height:5rem;">
+    <!-- Success Popup Element -->
+    <div id="successPopup" class="success-popup">
+      <i class="fas fa-check-circle"></i>
+      <span>Complaint submitted successfully!</span>
+    </div>
 
+    <div class="image" style="height:5rem;">
       <h1 id="dekstop">Welcome Back , {{username}}</h1>
       <div class="burger-icon open" id="burgerIcon">&#9776;</div>
       <div class="burger-icon close" id="burgerIconClose">&#10006;</div>
       <h1 id="mobile">Welcome Back ,<br> {{username}}</h1>
       <a href="/logout" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i>&nbsp;&nbsp;Logout</a>
-  </div>
-  <div class="sidebar" id="sidebar">
+    </div>
+    <div class="sidebar" id="sidebar">
       <div class="baselogo">
         <div class="logonew-icon">
           <i class="fa-solid fa-user-shield"></i>
@@ -178,7 +185,6 @@
             Reviews
           </div>
         </a>
-        
       </div>
     </div>
     <div class="content">
@@ -248,12 +254,46 @@
         burgerIcon.style.display = "block";
         burgerIconClose.style.display = "none";
       });
+
+      // Form submission with loader and success popup
       const form = document.querySelector("form");
       const loader = document.getElementById("loader");
+      const successPopup = document.getElementById("successPopup");
     
-      form.addEventListener("submit", function () {
-        loader.style.display = "flex"; // Show loader
+      form.addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent default form submission for demo
+        
+        // Show loader
+        loader.style.display = "flex";
+        
+        // Simulate form submission with a delay (replace with actual form submission)
+        setTimeout(() => {
+          // Hide loader after processing
+          loader.style.display = "none";
+          
+          // Show success popup
+          successPopup.classList.add("show");
+          
+          // Hide popup after 3 seconds
+          setTimeout(() => {
+            successPopup.classList.remove("show");
+            
+            // Submit the form after showing the popup (remove this if you're handling submission differently)
+            form.submit();
+          }, 3000);
+        }, 2000); // Simulate 2 seconds processing time
       });
+    
+      // Function to show success popup (can be called from other places too)
+      function showSuccessPopup(message = "Complaint submitted successfully!") {
+        const popup = document.getElementById("successPopup");
+        popup.querySelector("span").textContent = message;
+        popup.classList.add("show");
+        
+        setTimeout(() => {
+          popup.classList.remove("show");
+        }, 3000);
+      }
     </script>
   </body>
 </html>
