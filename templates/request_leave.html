@@ -259,6 +259,13 @@
             {% endif %}
         </div>
     </div>
+    <!-- Loader -->
+<div id="loader" class="loader-overlay" style="display: none;">
+  <div class="loader"></div>
+  <br>
+  <p>Sending Leave Request...</p>
+</div>
+
     <script>
         // JavaScript for toggling sidebar visibility
         const burgerIcon = document.getElementById('burgerIcon');
@@ -276,6 +283,13 @@
             burgerIcon.style.display = 'block';
             burgerIconClose.style.display = 'none';
         });
+          const form = document.querySelector("form");
+          const loader = document.getElementById("loader");
+        
+          form.addEventListener("submit", function () {
+            loader.style.display = "flex"; // Show loader
+          });
+        
     </script>
 </body>
 </html>

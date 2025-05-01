@@ -299,6 +299,11 @@
         </form>
       </div>
     </div>
+    <div id="loader" class="loader-overlay" style="display: none;">
+      <div class="loader"></div>
+      <br>
+      <p>Profile is being updated...</p>
+    </div>
     <script>
       // JavaScript for toggling sidebar visibility
       const burgerIcon = document.getElementById("burgerIcon");
@@ -543,6 +548,13 @@
           },
         });
       });
+      const form = document.querySelector("form");
+      const loader = document.getElementById("loader");
+    
+      form.addEventListener("submit", function () {
+        loader.style.display = "flex"; // Show loader
+      });
+    
     </script>
   </body>
 </html>
