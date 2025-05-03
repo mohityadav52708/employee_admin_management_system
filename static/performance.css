@@ -196,6 +196,7 @@
       .dashboard-header button{
         width: 275px;
         height: 40px;
+        margin-left: 20px;
       }
       .logout-btn{
         padding: 9px;
