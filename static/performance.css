@@ -148,7 +148,7 @@
   }
   .dashboard-header{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding: 1rem 2rem;
     background-color: #f8f9fc;
@@ -196,6 +196,9 @@
       .dashboard-header button{
         width: 275px;
         height: 40px;
+      }
+      .logout-btn{
+        padding: 9px;
       }
     }
     
