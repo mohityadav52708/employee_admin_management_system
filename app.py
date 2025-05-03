@@ -732,6 +732,91 @@ def export_online_employees():
     except Exception as e:
         return f"An error occurred: {str(e)}", 500
 
+@app.route('/performance')
+def performance():
+    if 'user' not in session or session.get('role') != 'admin':
+        
+        flash("Access denied.", "danger")
+        return redirect(url_for('login'))
 
+    employees = list(users_collection.find({"role": "employee"}))
+    performance_data = []
+
+    for emp in employees:
+        email = emp["email"]
+        total_tasks = db.tasks.count_documents({"employee_email": email})
+        completed_tasks = db.tasks.count_documents({"employee_email": email, "status": "Completed"})
+        complaints = db.complaints.count_documents({"employee_email": email})
+        leaves = db.leave_requests.count_documents({"employee_email": email})
+
+        performance_data.append({
+            "username": emp.get("username", "N/A"),
+            "email": email,
+            "tasks_total": total_tasks,
+            "tasks_completed": completed_tasks,
+            "completion_percent": round((completed_tasks / total_tasks) * 100, 2) if total_tasks > 0 else 0,
+            "complaints": complaints,
+            "leaves": leaves,
+            "profile_image": emp.get("profile_image"),
+            "department": emp.get("department", "N/A")
+        })
+
+    # Sort for top performer and top 3
+    top_performer = max(performance_data, key=lambda x: x['completion_percent'], default=None)
+    top_3_employees = sorted(performance_data, key=lambda x: x['completion_percent'], reverse=True)[:3]
+    
+    # Compute average
+    average_completion = round(
+        sum(emp['completion_percent'] for emp in performance_data) / len(performance_data),
+        1
+    ) if performance_data else 0
+    user = users_collection.find_one({"email": session['user']})
+    username = user['username']
+    return render_template(
+        'performance.html',
+        employees=performance_data,
+        top_performer=top_performer,
+        average_completion=average_completion,
+        top_3_employees=top_3_employees,
+        username=username
+    )
+@app.route('/download_performance_data', methods=['POST'])
+def download_performance_data():
+    if 'user' not in session or session.get('role') != 'admin':
+        flash("Access denied.", "danger")
+        return redirect(url_for('login'))
+
+    employees = list(users_collection.find({"role": "employee"}))
+    performance_data = []
+
+    for emp in employees:
+        email = emp["email"]
+        total_tasks = db.tasks.count_documents({"employee_email": email})
+        completed_tasks = db.tasks.count_documents({"employee_email": email, "status": "Completed"})
+        complaints = db.complaints.count_documents({"employee_email": email})
+        leaves = db.leave_requests.count_documents({"employee_email": email})
+
+        performance_data.append({
+            "Username": emp.get("username", "N/A"),
+            "Email": email,
+            "Department": emp.get("department", "N/A"),
+            "Total Tasks": total_tasks,
+            "Completed Tasks": completed_tasks,
+            "Completion %": round((completed_tasks / total_tasks) * 100, 2) if total_tasks > 0 else 0,
+            "Complaints": complaints,
+            "Leaves": leaves,
+        })
+
+    # Convert to DataFrame and export to Excel
+    df = pd.DataFrame(performance_data)
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        df.to_excel(writer, index=False, sheet_name='Performance Report')
+
+    output.seek(0)
+    return send_file(output,
+                     download_name="performance_report.xlsx",
+                     as_attachment=True,
+                     mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 if __name__ == '__main__':
     app.run(debug=True)

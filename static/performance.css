@@ -1,0 +1,201 @@
+:root {
+    --primary: #4e73df;
+    --success: #1cc88a;
+    --info: #36b9cc;
+    --warning: #f6c23e;
+    --danger: #e74a3b;
+    --dark: #5a5c69;
+    --light: #f8f9fc;
+  }
+  *{
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background-color: var(--light);
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  
+  .dashboard-header {
+    background-color: #ffffff;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    padding: 1rem 0;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card {
+    border: none;
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card-header {
+    font-weight: 700;
+    padding: 1rem 1.35rem;
+    border-radius: 0.35rem 0.35rem 0 0 !important;
+  }
+  
+  .summary-card .card-header {
+    background-color: var(--primary);
+    color: white;
+  }
+  
+  .top-performers .card-header {
+    background-color: var(--success);
+    color: white;
+  }
+  
+  .team-performance .card-header {
+    background-color: var(--dark);
+    color: white;
+  }
+  
+  .progress {
+    height: 0.8rem;
+    border-radius: 0.35rem;
+  }
+  
+  .metric-value {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--dark);
+  }
+  
+  .metric-label {
+    color: #858796;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  
+  .employee-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+    border: 2px solid #fff;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  
+  .chart-container {
+    background-color: white;
+    border-radius: 0.35rem;
+    padding: 1.5rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+  }
+  
+  .top-performer-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: var(--warning);
+    color: #000;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+  
+  .table th {
+    background-color: #f8f9fc;
+    border-bottom-width: 1px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: #858796;
+  }
+  
+  .badge-excellent { background-color: var(--success); }
+  .badge-good { background-color: var(--info); }
+  .badge-average { background-color: var(--warning); color: #000; }
+  .badge-poor { background-color: var(--danger); }
+  
+  .border-left-primary { border-left: 0.25rem solid var(--primary) !important; }
+  .border-left-success { border-left: 0.25rem solid var(--success) !important; }
+  .border-left-info { border-left: 0.25rem solid var(--info) !important; }
+  .border-left-warning { border-left: 0.25rem solid var(--warning) !important; }
+
+  .cover-of-performance-content{
+    margin-left: 250px;
+  }
+  .image #dekstop{
+    font-size: x-large;
+  }
+  h1,h2{
+    margin-bottom: 0px;
+    font-weight: none;
+  }
+  .image h1{
+    margin-bottom: 0px;
+    font-weight:bold;
+  }
+  .baselogo h2{
+    margin-bottom: 0px;
+    font-weight: bold;
+  }
+  .dashboard-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+  }
+  .dashboard-header h1{
+    font-size: 20px
+    /* font-size: 1rem; */
+  }
+  .card1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 150px;
+  }
+  .card2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 150px;
+  }
+  .card3{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 150px;
+  }
+  .card4{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 150px;
+  }
+    @media (max-width: 480px) {
+      .cover-of-performance-content{
+          margin-left: 0px;
+      }
+      .dashboard-header h1{
+        display: none;
+      }
+      .dashboard-header button{
+        width: 275px;
+        height: 40px;
+      }
+    }
+    
