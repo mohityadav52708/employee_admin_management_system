@@ -16,6 +16,16 @@
   />
 </head>
 <body>
+<!-- Notification Popups -->
+<div id="approvePopup" class="notification-popup">
+  <i class="fas fa-check-circle"></i>
+  <span>Leave request approved successfully!</span>
+</div>
+
+<div id="rejectPopup" class="notification-popup">
+  <i class="fas fa-times-circle"></i>
+  <span>Leave request rejected successfully!</span>
+</div>
     <div class="image">
 
         <h1 id="mobile">Welcome Back , <br> Admin {{username}}</h1>
@@ -322,6 +332,38 @@
             document.getElementById("loader").classList.add("active");
           });
         });
+        document.querySelectorAll("form").forEach((form) => {
+          form.addEventListener("submit", function(e) {
+              // Show loader
+              document.getElementById("loader").classList.add("active");
+              
+              // Find out which button was clicked
+              const action = e.submitter.value;
+              
+              // After loader completes (simulated with setTimeout)
+              setTimeout(() => {
+                  // Hide loader
+                  document.getElementById("loader").classList.remove("active");
+                  
+                  // Show appropriate popup
+                  if (action === 'approve') {
+                      showPopup('approvePopup');
+                  } else if (action === 'reject') {
+                      showPopup('rejectPopup');
+                  }
+              }, 1500); // Adjust this time to match your actual loader duration
+          });
+      });
+      
+      function showPopup(popupId) {
+          const popup = document.getElementById(popupId);
+          popup.classList.add("show");
+          
+          // Hide popup after 3 seconds
+          setTimeout(() => {
+              popup.classList.remove("show");
+          }, 3000);
+      }
     </script>
 </body>
 </html>

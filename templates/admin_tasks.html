@@ -271,37 +271,73 @@
       </div>
     </div>
   </div>
+<!-- Notification Popup -->
+<div id="taskPopup" class="notification-popup">
+  <i class="fas fa-check-circle"></i>
+  <span>Task assigned successfully!</span>
+</div>
 
-  <script>
-    const burgerIcon = document.getElementById('burgerIcon');
-    const burgerIconClose = document.getElementById('burgerIconClose');
-    const sidebar = document.getElementById('sidebar');
-    burgerIcon.addEventListener('click', () => {
-      sidebar.classList.add('show');
-      burgerIcon.style.display = 'none';
-      burgerIconClose.style.display = 'block';
-    });
-    burgerIconClose.addEventListener('click', () => {
-      sidebar.classList.remove('show');
-      burgerIcon.style.display = 'block';
-      burgerIconClose.style.display = 'none';
-    });
-    function toggleForm() {
-      const form = document.getElementById("taskForm");
-      form.classList.toggle("show");
-    }
-    const taskForm = document.querySelector("form");
-    taskForm.addEventListener("submit", function () {
-      document.getElementById("loader").classList.add("active");
-    });
-  </script>
   <div id="loader" class="loader-overlay">
     <div class="loader-container">
       <div class="fancy-spinner"></div>
       <p>Assigning Task, please wait...</p>
     </div>
   </div>
-  
+    <script>
+      const burgerIcon = document.getElementById('burgerIcon');
+      const burgerIconClose = document.getElementById('burgerIconClose');
+      const sidebar = document.getElementById('sidebar');
+      burgerIcon.addEventListener('click', () => {
+        sidebar.classList.add('show');
+        burgerIcon.style.display = 'none';
+        burgerIconClose.style.display = 'block';
+      });
+      burgerIconClose.addEventListener('click', () => {
+        sidebar.classList.remove('show');
+        burgerIcon.style.display = 'block';
+        burgerIconClose.style.display = 'none';
+      });
+      function toggleForm() {
+        const form = document.getElementById("taskForm");
+        form.classList.toggle("show");
+      }
+      const taskForm = document.querySelector("form");
+      taskForm.addEventListener("submit", function () {
+        document.getElementById("loader").classList.add("active");
+      });
+    
+    // Task form submission with loader and popup
+    taskForm.addEventListener("submit", function(e) {
+      e.preventDefault(); // Prevent default form submission
+      
+      // Show loader
+      loader.classList.add("active");
+      
+      // Simulate processing delay (1.5 seconds)
+      setTimeout(() => {
+        // Hide loader
+        loader.classList.remove("active");
+        
+        // Show success popup
+        showPopup('taskPopup');
+        
+        // Submit the form after showing popup
+        setTimeout(() => {
+          this.submit();
+        }, 1000);
+      }, 1500);
+    });
+    
+    function showPopup(popupId) {
+      const popup = document.getElementById(popupId);
+      popup.classList.add("show");
+      
+      // Hide popup after 3 seconds
+      setTimeout(() => {
+        popup.classList.remove("show");
+      }, 3000);
+    }
+  </script>
   
 </body>
 </html>

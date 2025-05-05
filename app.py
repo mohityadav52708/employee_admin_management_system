@@ -556,9 +556,14 @@ def complaints():
 def admin_complaints():
     if 'user' in session and session.get('role') == 'admin':
         if request.method == 'POST':
-            complaint_id = request.form['complaint_id']
-            action = request.form['action']
-            response = request.form.get('response', '')  # Optional response from admin
+            # Use get() with default to avoid KeyError
+            complaint_id = request.form.get('complaint_id')
+            action = request.form.get('action')
+            response = request.form.get('response', '')
+            
+            if not complaint_id or not action:
+                flash('Invalid request parameters', 'danger')
+                return redirect(url_for('admin_complaints'))
 
             # Find the complaint and update the status and response
             if action == 'resolve':
@@ -579,7 +584,7 @@ def admin_complaints():
         complaints = list(db.complaints.find({"status": "Pending"}))
         user = users_collection.find_one({"email": session['user']})
         username = user['username']
-        return render_template('admin_complaints.html', complaints=complaints,username=username)
+        return render_template('admin_complaints.html', complaints=complaints, username=username)
     else:
         flash('Access denied. Only admin can manage complaints.', 'danger')
         return redirect(url_for('login'))
@@ -622,7 +627,7 @@ def assign_task():
         })
 
         flash('Task assigned successfully!', 'success')
-        return redirect(url_for('admin_home'))
+        return redirect(url_for('tasks'))
 
 @app.route('/tasks', methods=['GET'])
 def tasks():
