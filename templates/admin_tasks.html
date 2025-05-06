@@ -23,7 +23,24 @@
     <h1 id="dekstop">Welcome Back , Admin {{username}}</h1>
     <div class="burger-icon open" id="burgerIcon">&#9776;</div>
     <div class="burger-icon close" id="burgerIconClose">&#10006;</div>
+    
+    <!-- Desktop Search -->
+    <div class="search-wrapper">
+      <div class="search-container dekstop">
+        <input type="text" id="searchInput" placeholder="Search tasks by title, description, employee..." />
+        <button class="search-btn"><i class="fa-solid fa-search"></i></button>
+      </div>
+      <div id="searchResults" class="search-results"></div>
+    </div>
+    
     <a href="/logout" class="logout-btn">Logout</a>
+  </div>
+
+  <!-- Mobile Search (placed after sidebar) -->
+  <div class="search-container mobile">
+    <input type="text" id="mobileSearchInput" placeholder="Search tasks by title, description, employee..." />
+    <button class="search-btn"><i class="fa-solid fa-search"></i></button>
+    <div id="mobileSearchResults" class="search-results"></div>
   </div>
 
   <div class="sidebar" id="sidebar">
@@ -337,6 +354,116 @@
         popup.classList.remove("show");
       }, 3000);
     }
+
+    // Task Search Functionality
+    function setupTaskSearch(inputId, resultsId, isMobile = false) {
+      const searchInput = document.getElementById(inputId);
+      const resultsContainer = document.getElementById(resultsId);
+      const taskTable = document.querySelector(".tasks-table tbody");
+
+      function getTaskData() {
+        const rows = taskTable.querySelectorAll("tr");
+        return Array.from(rows).map(row => ({
+          element: row,
+          title: row.cells[0].textContent.trim(),
+          description: row.cells[1].textContent.trim(),
+          employee: row.cells[2].textContent.trim(),
+          dueDate: row.cells[3].textContent.trim(),
+          status: row.cells[4].textContent.trim()
+        }));
+      }
+
+      const allTasks = getTaskData();
+
+      function highlightText(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<span class="highlight">$1</span>');
+      }
+
+      function filterResults() {
+        const query = searchInput.value.trim().toLowerCase();
+        resultsContainer.innerHTML = "";
+
+        if (!query) {
+          resultsContainer.classList.remove("active");
+          allTasks.forEach(task => task.element.style.display = "");
+          return;
+        }
+
+        const matches = allTasks.filter(task => 
+          task.title.toLowerCase().includes(query) || 
+          task.description.toLowerCase().includes(query) || 
+          task.employee.toLowerCase().includes(query) ||
+          task.dueDate.toLowerCase().includes(query) ||
+          task.status.toLowerCase().includes(query)
+        );
+
+        if (matches.length > 0) {
+          matches.forEach(task => {
+            const div = document.createElement("a");
+            div.className = "result-item";
+            div.href = "#";
+            div.innerHTML = `
+              <div class="task-info">
+                <div class="title">${highlightText(task.title, query)}</div>
+                <div class="employee">Assigned to: ${highlightText(task.employee, query)}</div>
+                <div class="status">Status: ${highlightText(task.status, query)}</div>
+              </div>
+            `;
+            div.addEventListener('click', (e) => {
+              e.preventDefault();
+              allTasks.forEach(t => t.element.style.display = "none");
+              task.element.style.display = "";
+              searchInput.value = "";
+              resultsContainer.classList.remove("active");
+              if (isMobile) {
+                document.getElementById('mobileSearchResults').classList.remove("active");
+              } else {
+                document.getElementById('searchResults').classList.remove("active");
+              }
+            });
+            resultsContainer.appendChild(div);
+          });
+
+          allTasks.forEach(task => {
+            task.element.style.display = matches.includes(task) ? "" : "none";
+          });
+        } else {
+          resultsContainer.innerHTML = `<div class="no-results">No matching tasks found</div>`;
+          allTasks.forEach(task => task.element.style.display = "none");
+        }
+
+        resultsContainer.classList.add("active");
+      }
+
+      searchInput.addEventListener("input", debounce(filterResults, 300));
+    }
+
+    function debounce(func, delay) {
+      let timeout;
+      return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), delay);
+      };
+    }
+
+    // Initialize both search inputs
+    document.addEventListener('DOMContentLoaded', function() {
+      setupTaskSearch('searchInput', 'searchResults');
+      setupTaskSearch('mobileSearchInput', 'mobileSearchResults', true);
+      
+      // Close search results when clicking outside
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-container')) {
+          document.querySelectorAll('.search-results').forEach(el => {
+            el.classList.remove('active');
+          });
+        }
+      });
+    });
   </script>
   
 </body>
