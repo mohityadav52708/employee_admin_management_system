@@ -560,6 +560,9 @@ thead{
     .search-container input {
         width: 95%;
     }
+    .search-btn {
+        right: 20px;
+    }
     .search-container{
         width: none;
     }
