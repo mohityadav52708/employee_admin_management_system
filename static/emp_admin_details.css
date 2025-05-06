@@ -72,9 +72,9 @@ button, .btn {
     transition: background-color 0.3s ease;
 }
 
-button:hover, .btn:hover {
-    /* background-color: #45a049; */
-}
+/* button:hover, .btn:hover {
+    background-color: #45a049;
+} */
 
 .btn-danger {
     background-color: #e74c3c;
@@ -559,9 +559,6 @@ thead{
 @media (max-width: 480px) {
     .search-container input {
         width: 95%;
-    }
-    .search-btn{
-        left: 270px;
     }
     .search-container{
         width: none;
