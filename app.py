@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 from pymongo import MongoClient
 import datetime
 import bcrypt
@@ -12,39 +12,46 @@ import ssl
 import cloudinary
 import xlsxwriter
 import cloudinary.uploader
-from flask import send_file
 import pandas as pd
 from bson.objectid import ObjectId
-from bson import ObjectId
-import datetime
 from datetime import datetime, timedelta
-from datetime import datetime
 from io import BytesIO
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = os.getenv('SECRET_KEY')
 
 # MongoDB Configuration
-uri = "mongodb+srv://whitedevil7628:mohit038@cluster1.oohsn.mongodb.net/myDatabase?retryWrites=true&w=majority"
+uri = os.getenv('MONGO_URI')
 client = MongoClient(uri)
 db = client["endsem"]
 users_collection = db["users"]
 attendance_collection = db["attendance"]
+
 # Email Configuration
-app.config['MAIL_USERNAME'] = 'librarymanagementprjoect@gmail.com'
-app.config['MAIL_PASSWORD'] = 'ykqy zkvd zzak ujpa'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+
 CORS(app)  # Enable CORS for front-end communication
+
+# Upload configuration
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-# Ensure the upload folder exists
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Cloudinary configuration
 cloudinary.config(
-    cloud_name="dxoxq2pe1",
-    api_key="329235461831941",
-    api_secret="--HbEmUPXfkxokCWL0NWQmbvNaY"
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
