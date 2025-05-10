@@ -256,36 +256,68 @@
                             </div>
                         </div>
 
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="card-icon card-icon-emerald">
-                                    <i class="fa-solid fa-file-invoice-dollar"></i>
-                                </div>
-                            </div>
-                            <h3 class="card-title">Generate Salary Slip</h3>
-                            <p class="card-description">Create and download salary slips for employees</p>
-                            <div class="card-footer">
-                                <form id="slipForm">
-                                    <div class="form-group">
-                                        <label for="slipEmployee">Select Employee:</label>
-                                        <select id="slipEmployee" class="form-control" required>
-                                            <option value="">-- Select Employee --</option>
-                                            {% for emp in employees %}
-                                            <option value="{{ emp.email }}">{{ emp.username }} ({{ emp.email }})</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="monthYear">Month/Year:</label>
-                                        <input type="month" id="monthYear" class="form-control" required>
-                                    </div>
-                                    <button type="submit" class="card-button card-button-emerald">
-                                        <span>Generate Slip</span>
-                                        <i class="fa-solid fa-download"></i>
-                                    </button>
-                                </form>
-                            </div>
+<div class="card">
+    <div class="card-header">
+        <div class="card-icon card-icon-emerald">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+    </div>
+    <h3 class="card-title">Generate Salary Slip</h3>
+    <p class="card-description">Create and download salary slips for employees</p>
+    <div class="card-footer">
+        <form id="slipForm">
+            <!-- Employee Info Display (now above the select) -->
+            <div id="employeeInfo" class="employee-info-display" style="display: none;">
+                <div class="employee-profile-container">
+                    <div class="profile-pic-wrapper">
+                        <img id="infoProfilePic" class="employee-profile-pic" 
+                             onerror="this.src='/static/images/default-image.jpg';this.onerror=null;" 
+                             src="" alt="Profile Picture">
+                    </div>
+                    <div class="employee-details">
+                        <div class="info-row">
+                            <span class="info-label">Name:</span>
+                            <span id="infoName" class="info-value"></span>
                         </div>
+                        <div class="info-row">
+                            <span class="info-label">Department:</span>
+                            <span id="infoDepartment" class="info-value"></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Current Salary:</span>
+                            <span id="infoSalary" class="info-value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="slipEmployee">Select Employee:</label>
+                <select id="slipEmployee" class="form-control" required>
+                    <option value="">-- Select Employee --</option>
+                    {% for emp in employees %}
+                    <option value="{{ emp.email }}" 
+                            data-name="{{ emp.username }}"
+                            data-salary="{{ emp.salary|default(0) }}"
+                            data-department="{{ emp.department|default('N/A') }}"
+                            data-profilepic="{{ emp.profile_image if emp.profile_image else '/static/images/default-image.jpg' }}">
+                        {{ emp.username }} ({{ emp.email }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="monthYear">Month/Year:</label>
+                <input type="month" id="monthYear" class="form-control" required>
+            </div>
+            <button type="submit" class="card-button card-button-emerald">
+                <span>Generate Slip</span>
+                <i class="fa-solid fa-download"></i>
+            </button>
+        </form>
+    </div>
+</div>
                     </div>
 
                     <div class="section" style="margin-top: 30px;">
@@ -383,6 +415,25 @@
             
             window.location.href = `/generate_salary_slip?email=${employeeEmail}&month=${monthYear}`;
         });
+    document.getElementById('slipEmployee').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    const infoDiv = document.getElementById('employeeInfo');
+    
+    if (this.value) {
+        document.getElementById('infoName').textContent = selectedOption.getAttribute('data-name');
+        document.getElementById('infoDepartment').textContent = selectedOption.getAttribute('data-department');
+        document.getElementById('infoSalary').textContent = '₹' + selectedOption.getAttribute('data-salary');
+        
+        // Set profile picture with default fallback
+        const profilePic = document.getElementById('infoProfilePic');
+        const profilePicUrl = selectedOption.getAttribute('data-profilepic');
+        profilePic.src = profilePicUrl || '/static/images/default-image.jpg';
+        
+        infoDiv.style.display = 'block';
+    } else {
+        infoDiv.style.display = 'none';
+    }
+});
     </script>
 </body>
 </html>

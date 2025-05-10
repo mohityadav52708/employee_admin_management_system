@@ -159,7 +159,47 @@
 .attendance-table td {
     color: #374151;
 }
+/* Employee Info Display Styles */
+.employee-info-display {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #8b5cf6;
+}
 
+.employee-profile-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.employee-profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #8b5cf6;
+}
+
+.employee-details {
+    flex: 1;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 120px;
+}
+
+.info-value {
+    color: #212529;
+}
 /* Responsive */
 @media (max-width: 768px) {
     #dekstop {
@@ -178,5 +218,8 @@
     }
     .section-content {
         padding: initial;
+    }
+    .employee-info-display{
+        margin-left: -25px;
     }
 }
