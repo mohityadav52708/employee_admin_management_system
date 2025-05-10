@@ -1,33 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Complaints</title>
-    <link rel="stylesheet" href="../static/home.css" />
-    <link rel="stylesheet" href="../static/employee_complaints.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link rel="stylesheet" href="../static/home.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <style></style>
-  <body>
-    <!-- Success Popup Element -->
-    <div id="successPopup" class="success-popup">
-      <i class="fas fa-check-circle"></i>
-      <span>Complaint submitted successfully!</span>
-    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Salary</title>
+    <link rel="stylesheet" href="/static/home.css">
+    <link rel="stylesheet" href="/static/employee_salary.css">
+     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+
+<body>
     <div class="image" style="height: 5rem">
       <h1 id="dekstop">Welcome Back , {{username}}</h1>
       <div class="burger-icon open" id="burgerIcon">&#9776;</div>
@@ -202,111 +192,97 @@
         </a>
       </div>
     </div>
-    <div class="content"></div>
-    <h2>Submit a Complaint</h2>
-    <form method="POST" action="{{ url_for('complaints') }}">
-      <label for="title">Complaint Title:</label>
-      <input type="text" id="title" name="title" required />
-      <label for="description">Complaint Description:</label>
-      <textarea
-        id="description"
-        name="description"
-        rows="4"
-        required
-      ></textarea>
-      <button type="submit">Submit Complaint</button>
-    </form>
 
-    <h2>Your Complaints</h2>
-    {% if complaints %}
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Status</th>
-          <th>Admin Response</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for complaint in complaints %}
-        <tr>
-          <td>{{ complaint['title'] }}</td>
-          <td>{{ complaint['description'] }}</td>
-          <td>{{ complaint['status'] }}</td>
-          <td>
-            {{ complaint['response'] if complaint['response'] else "No response
-            yet" }}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-    <p class="no-complaints">You have not submitted any complaints yet.</p>
-    {% endif %}
-    <div id="loader" class="loader-overlay" style="display: none">
-      <div class="loader"></div>
-      <br />
-      <p>Sending Complaint Request...</p>
+        <div class="dashboard-content">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        <span>Salary Details</span>
+                    </h2>
+                </div>
+                <div class="section-content">
+                    <div class="cards-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon card-icon-purple">
+                                    <i class="fa-solid fa-wallet"></i>
+                                </div>
+                            </div>
+                            <h3 class="card-title">Current Salary</h3>
+                            <p class="card-description">Your current monthly salary</p>
+                            <div class="card-footer">
+                                <h2 style="text-align: center; color: var(--purple-from);">₹{{ current_salary }}</h2>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon card-icon-emerald">
+                                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                                </div>
+                            </div>
+                            <h3 class="card-title">Salary Slips</h3>
+                            <p class="card-description">Download your salary slips</p>
+                            <div class="card-footer">
+                                <form id="slipForm">
+                                    <div class="form-group">
+                                        <label for="monthYear">Month/Year:</label>
+                                        <input type="month" id="monthYear" class="form-control" required>
+                                    </div>
+                                    <button type="submit" class="card-button card-button-emerald">
+                                        <span>Download Slip</span>
+                                        <i class="fa-solid fa-download"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top: 30px;">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="fa-solid fa-clock-rotate-left"></i>
+                                <span>Salary History</span>
+                            </h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-container">
+                                <table class="attendance-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Previous Salary</th>
+                                            <th>New Salary</th>
+                                            <th>Date</th>
+                                            <th>Reason</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for history in salary_history %}
+                                        <tr>
+                                            <td>₹{{ history.previous_salary }}</td>
+                                            <td>₹{{ history.new_salary }}</td>
+                                            <td>{{ history.date.strftime('%d-%m-%Y') }}</td>
+                                            <td>{{ history.reason }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
     <script>
-      // JavaScript for toggling sidebar visibility
-      const burgerIcon = document.getElementById("burgerIcon");
-      const burgerIconClose = document.getElementById("burgerIconClose");
-      const sidebar = document.getElementById("sidebar");
-
-      burgerIcon.addEventListener("click", () => {
-        sidebar.classList.add("show");
-        burgerIcon.style.display = "none";
-        burgerIconClose.style.display = "block";
-      });
-
-      burgerIconClose.addEventListener("click", () => {
-        sidebar.classList.remove("show");
-        burgerIcon.style.display = "block";
-        burgerIconClose.style.display = "none";
-      });
-
-      // Form submission with loader and success popup
-      const form = document.querySelector("form");
-      const loader = document.getElementById("loader");
-      const successPopup = document.getElementById("successPopup");
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevent default form submission for demo
-
-        // Show loader
-        loader.style.display = "flex";
-
-        // Simulate form submission with a delay (replace with actual form submission)
-        setTimeout(() => {
-          // Hide loader after processing
-          loader.style.display = "none";
-
-          // Show success popup
-          successPopup.classList.add("show");
-
-          // Hide popup after 3 seconds
-          setTimeout(() => {
-            successPopup.classList.remove("show");
-
-            // Submit the form after showing the popup (remove this if you're handling submission differently)
-            form.submit();
-          }, 3000);
-        }, 2000); // Simulate 2 seconds processing time
-      });
-
-      // Function to show success popup (can be called from other places too)
-      function showSuccessPopup(message = "Complaint submitted successfully!") {
-        const popup = document.getElementById("successPopup");
-        popup.querySelector("span").textContent = message;
-        popup.classList.add("show");
-
-        setTimeout(() => {
-          popup.classList.remove("show");
-        }, 3000);
-      }
+        document.getElementById('slipForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const monthYear = document.getElementById('monthYear').value;
+            window.location.href = `/generate_salary_slip?email={{ user.email }}&month=${monthYear}`;
+        });
     </script>
-  </body>
+</body>
 </html>

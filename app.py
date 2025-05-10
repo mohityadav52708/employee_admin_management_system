@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file,jsonify
 from pymongo import MongoClient
 import datetime
 import bcrypt
@@ -830,5 +830,200 @@ def download_performance_data():
                      download_name="performance_report.xlsx",
                      as_attachment=True,
                      mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+salary_history_collection = db["salary_history"]
+# Add these new routes to your existing app.py
+
+@app.route('/salary')
+def salary():
+    if 'user' not in session or session.get('role') != 'admin':
+        flash("Access denied.", "danger")
+        return redirect(url_for('login'))
+
+    # Get all employees
+    employees = list(users_collection.find({"role": "employee"}))
+    
+    # Get salary history
+    salary_history = list(db.salary_history.find().sort("date", -1))
+    
+    # Add employee names to history
+    for record in salary_history:
+        employee = users_collection.find_one({"email": record["employee_email"]})
+        record["employee_name"] = employee.get("username", "N/A") if employee else "N/A"
+
+    user = users_collection.find_one({"email": session['user']})
+    username = user['username']
+    
+    return render_template(
+        'salary.html',
+        employees=employees,
+        salary_history=salary_history,
+        username=username
+    )
+
+@app.route('/employee-salary')
+def employee_salary():
+    if 'user' not in session or session.get('role') != 'employee':
+        flash("Access denied.", "danger")
+        return redirect(url_for('login'))
+
+    user = users_collection.find_one({"email": session['user']})
+    username = user['username']
+    current_salary = user.get("salary", 0)
+    
+    # Get salary history for this employee
+    salary_history = list(db.salary_history.find(
+        {"employee_email": session['user']}
+    ).sort("date", -1))
+
+    return render_template(
+        'employee_salary.html',
+        current_salary=current_salary,
+        salary_history=salary_history,
+        user=user,
+        username=username
+    )
+
+@app.route('/update_salary', methods=['POST'])
+def update_salary():
+    if 'user' not in session or session.get('role') != 'admin':
+        return jsonify({"error": "Unauthorized"}), 401
+
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+
+        employee_email = data.get('employee_email')
+        new_salary = data.get('new_salary')
+        reason = data.get('reason', '')
+
+        if not employee_email or not new_salary:
+            return jsonify({"error": "Missing required fields"}), 400
+
+        # Convert to float safely
+        try:
+            new_salary = float(new_salary)
+        except ValueError:
+            return jsonify({"error": "Invalid salary amount"}), 400
+
+        # Get current salary
+        employee = users_collection.find_one({"email": employee_email})
+        if not employee:
+            return jsonify({"error": "Employee not found"}), 404
+
+        previous_salary = employee.get("salary", 0)
+
+        # Update salary in user record
+        users_collection.update_one(
+            {"email": employee_email},
+            {"$set": {"salary": new_salary}}
+        )
+
+        # Record in salary history
+        db.salary_history.insert_one({
+            "employee_email": employee_email,
+            "previous_salary": previous_salary,
+            "new_salary": new_salary,
+            "date": datetime.now(),
+            "reason": reason,
+            "updated_by": session['user']
+        })
+
+        return jsonify({
+            "success": True,
+            "message": "Salary updated successfully"
+        })
+
+    except Exception as e:
+        return jsonify({
+            "error": str(e),
+            "message": "An error occurred while updating salary"
+        }), 500
+@app.route('/generate_salary_slip')
+def generate_salary_slip():
+    email = request.args.get('email')
+    month_year = request.args.get('month')
+    
+    if not email or not month_year:
+        flash("Missing parameters", "danger")
+        return redirect(url_for('login'))
+
+    # Check authorization
+    if 'user' not in session:
+        flash("Please log in", "danger")
+        return redirect(url_for('login'))
+    
+    if session.get('role') == 'employee' and session['user'] != email:
+        flash("Access denied", "danger")
+        return redirect(url_for('employee_salary'))
+
+    # Get employee data
+    employee = users_collection.find_one({"email": email})
+    if not employee:
+        flash("Employee not found", "danger")
+        return redirect(url_for('login'))
+
+    # Create salary slip data
+    year, month = map(int, month_year.split('-'))
+    salary_slip_data = {
+        "employee_name": employee.get("username", "N/A"),
+        "employee_email": email,
+        "employee_id": str(employee.get("_id")),
+        "department": employee.get("department", "N/A"),
+        "month": month,
+        "year": year,
+        "basic_salary": employee.get("salary", 0),
+        "hra": 0.4 * employee.get("salary", 0),  # 40% of basic
+        "da": 0.2 * employee.get("salary", 0),   # 20% of basic
+        "deductions": 0.1 * employee.get("salary", 0),  # 10% of basic
+        "net_salary": 1.5 * employee.get("salary", 0)   # Basic + HRA + DA - Deductions
+    }
+
+    # Create Excel file
+    output = BytesIO()
+    workbook = xlsxwriter.Workbook(output)
+    worksheet = workbook.add_worksheet()
+
+    # Formatting
+    bold = workbook.add_format({'bold': True})
+    money = workbook.add_format({'num_format': '₹#,##0.00'})
+
+    # Write data
+    worksheet.write(0, 0, "Salary Slip", bold)
+    worksheet.write(1, 0, "Employee Name:")
+    worksheet.write(1, 1, salary_slip_data["employee_name"])
+    worksheet.write(2, 0, "Employee ID:")
+    worksheet.write(2, 1, salary_slip_data["employee_id"])
+    worksheet.write(3, 0, "Department:")
+    worksheet.write(3, 1, salary_slip_data["department"])
+    worksheet.write(4, 0, "Month/Year:")
+    worksheet.write(4, 1, f"{month_year}-01")
+
+    # Salary breakdown
+    worksheet.write(6, 0, "Earnings", bold)
+    worksheet.write(7, 0, "Basic Salary")
+    worksheet.write(7, 1, salary_slip_data["basic_salary"], money)
+    worksheet.write(8, 0, "HRA")
+    worksheet.write(8, 1, salary_slip_data["hra"], money)
+    worksheet.write(9, 0, "DA")
+    worksheet.write(9, 1, salary_slip_data["da"], money)
+
+    worksheet.write(11, 0, "Deductions", bold)
+    worksheet.write(12, 0, "Taxes & Other Deductions")
+    worksheet.write(12, 1, salary_slip_data["deductions"], money)
+
+    worksheet.write(14, 0, "Net Salary", bold)
+    worksheet.write(14, 1, salary_slip_data["net_salary"], money)
+
+    workbook.close()
+    output.seek(0)
+
+    filename = f"salary_slip_{email}_{month_year}.xlsx"
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=filename,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
 if __name__ == '__main__':
     app.run(debug=True)
