@@ -3,87 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="/static/login.css">
+    <title>Login | Employee/Admin Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/login.css" />
 </head>
-<body>
-    <div class="container">
-        <h2 id="loginHeading">Login/Employee</h2>
-        <form method="POST" action="{{ url_for('login') }}">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+<style>
+    .notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 350px;
+  width: 100%;
+}
 
-            <label for="password">Password:</label>
-            <div class="password-container">
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+.notification {
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transform: translateX(120%);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.notification.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.notification.success {
+  background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+}
+
+.notification.error {
+  background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+}
+
+.notification i {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 15px;
+  padding: 0;
+}
+
+    </style>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
+    <!-- Floating background elements -->
+    <div class="floating-bg">
+        <div class="floating-circle circle-1"></div>
+        <div class="floating-circle circle-2"></div>
+        <div class="floating-circle circle-3"></div>
+    </div>
+
+    <!-- Particles animation -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container animate__animated animate__fadeIn">
+        <div class="login-header">
+            <h2 id="loginHeading">Employee Portal</h2>
+            <p>Access your management dashboard</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="your.email@company.com" required>
+                <div class="input-highlight"></div>
             </div>
 
-            <button type="submit">Login</button>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    <div class="input-highlight"></div>
+                    <span class="toggle-password" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="remember-me">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <span>Login</span>
+            </button>
         </form>
 
         <div class="form-footer">
-            <a href="{{ url_for('forgot_password') }}">Forgot Password?</a> |
-            <a href="{{ url_for('signup') }}">Sign Up</a>
+            <a href="{{ url_for('forgot_password') }}">Forgot Password?</a>
+            <a href="{{ url_for('signup') }}">Create Account</a>
         </div>
+
         <div class="portal-option">
-            <a href="#" onclick="updateHeading(event, 'Employee')">Employee Portal</a>
-            <a href="#" onclick="updateHeading(event, 'Admin')">Admin Portal</a>
+            <a href="#" onclick="updateHeading(event, 'Employee')" class="active">Employee</a>
+            <a href="#" onclick="updateHeading(event, 'Admin')">Admin</a>
         </div>
     </div>
+
     <!-- Loader Animation -->
-<div id="loaderOverlay" class="loader-overlay">
-    <div class="loader-container">
-      <div class="fancy-spinner"></div>
-     <b> <p>Logging you in, please wait...</p></b>
+    <div id="loaderOverlay" class="loader-overlay">
+        <div class="loader-container">
+            <div class="fancy-spinner">
+                <div class="ring ring-1"></div>
+                <div class="ring ring-2"></div>
+                <div class="ring ring-3"></div>
+            </div>
+            <p>Authenticating, please wait...</p>
+        </div>
     </div>
-  </div>
-  
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         <script>
             window.onload = function() {
                 {% for category, message in messages %}
-                    alert("{{ message }}");
+                    showNotification("{{ message }}", "{{ category }}");
                 {% endfor %}
             };
         </script>
     {% endif %}
-   {% endwith %}
-   
-   <script>
-    function updateHeading(event, portal) {
-        event.preventDefault();
-        document.getElementById('loginHeading').textContent = `Login/${portal}`;
-        const form = document.querySelector('form');
-        const currentAction = form.getAttribute('action');
-        const newAction = currentAction.split('?')[0] + `?portal=${portal.toLowerCase()}`;
-        form.setAttribute('action', newAction);
-    }
+    {% endwith %}
 
-    function togglePassword() {
-        const passwordField = document.getElementById('password');
-        const toggleIcon = document.querySelector('.toggle-password');
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            toggleIcon.textContent = '🙈';
-        } else {
-            passwordField.type = 'password';
-            toggleIcon.textContent = '👁️';
+    <script>
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random properties
+                const size = Math.random() * 5 + 2;
+                const posX = Math.random() * 100;
+                const duration = Math.random() * 15 + 10;
+                const delay = Math.random() * 10;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
         }
+        
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Update heading and form action
+        function updateHeading(event, portal) {
+            event.preventDefault();
+            document.getElementById('loginHeading').textContent = `${portal} Portal`;
+            
+            // Update active tab
+            const portalLinks = document.querySelectorAll('.portal-option a');
+            portalLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.textContent === portal) {
+                    link.classList.add('active');
+                }
+            });
+            
+            const form = document.querySelector('form');
+            const currentAction = form.getAttribute('action');
+            const newAction = currentAction.split('?')[0] + `?portal=${portal.toLowerCase()}`;
+            form.setAttribute('action', newAction);
+            
+            // Add animation to container
+            const container = document.querySelector('.container');
+            container.classList.remove('animate__fadeIn');
+            void container.offsetWidth; // Trigger reflow
+            container.classList.add('animate__pulse');
+            
+            setTimeout(() => {
+                container.classList.remove('animate__pulse');
+            }, 1000);
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 5000);
+        }
+        
+        // Form submission loader
+        const loginForm = document.getElementById('loginForm');
+        const loaderOverlay = document.getElementById('loaderOverlay');
+        
+        loginForm.addEventListener('submit', function(e) {
+            loaderOverlay.classList.add('active');
+            
+            // Simulate loading for demo (remove in production)
+            setTimeout(() => {
+                loaderOverlay.classList.remove('active');
+            }, 3000);
+        });
+        
+        // Initialize particles on load
+        window.addEventListener('load', createParticles);
+        
+        // Add animation to form inputs on focus
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('active');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('active');
+            });
+        });
+    </script>
+    <script>
+  function showNotification(message, type = 'success') {
+    const container = document.getElementById('notificationContainer');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    let icon = type === 'success' ? 'fa-check-circle' : 
+               type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+    
+    notification.innerHTML = `
+      <i class="fas ${icon}"></i>
+      <span>${message}</span>
+      <button class="notification-close" onclick="this.parentElement.remove()">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+
+    container.appendChild(notification);
+
+    setTimeout(() => {
+      notification.classList.add('show');
+    }, 100);
+
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => {
+        notification.remove();
+      }, 300);
+    }, 4000);
+  }
+
+  // Auto-show notification if ?message=...&type=... is in URL
+  document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const message = params.get("message");
+    const type = params.get("type") || "success";
+
+    if (message) {
+      showNotification(decodeURIComponent(message), type);
+
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
     }
-
-    {% if alert_message %}
-        alert("{{ alert_message }}");
-    {% endif %}
-
-    // ✅ Fancy Loader Activation on form submit
-    const loginForm = document.querySelector('form');
-    const loaderOverlay = document.getElementById('loaderOverlay'); // <--- important line
-
-    loginForm.addEventListener('submit', function() {
-        loaderOverlay.classList.add('active'); 
-    });
+  });
 </script>
 
 </body>

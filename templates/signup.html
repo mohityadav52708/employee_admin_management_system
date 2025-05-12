@@ -3,253 +3,165 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign Up</title>
-
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(to right, #6a11cb, #2575fc);
-      color: #fff;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .container {
-      background-color: #ffffff;
-      color: #333;
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      width: 350px;
-      position: relative;
-      z-index: 10;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333;
-      font-size: 24px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      font-size: 14px;
-      margin: 10px 0 5px;
-      color: #555;
-    }
-
-    input[type="text"], input[type="email"], input[type="password"] {
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      margin-bottom: 15px;
-      transition: border-color 0.3s;
-    }
-
-    input:focus {
-      border-color: #2575fc;
-      outline: none;
-    }
-
-    .radio-group {
-      margin-bottom: 15px;
-    }
-
-    .radio-group label {
-      font-size: 14px;
-      margin-right: 15px;
-    }
-
-    button {
-      background: linear-gradient(to right, #6a11cb, #2575fc);
-      color: #fff;
-      padding: 12px;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: linear-gradient(to right, #2575fc, #6a11cb);
-    }
-
-    .form-footer {
-      text-align: center;
-      margin-top: 15px;
-    }
-
-    .form-footer a {
-      color: #2575fc;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .form-footer a:hover {
-      text-decoration: underline;
-    }
-
-    .password-container {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .password-container input[type="password"],
-    .password-container input[type="text"] {
-      width: 100%;
-      padding-right: 40px;
-    }
-
-    .toggle-password {
-      position: absolute;
-      top: 50%;
-      right: 10px;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 18px;
-      color: #777;
-      padding-bottom: 15px;
-    }
-
-    .toggle-password:hover {
-      color: #2575fc;
-    }
-
-    /* Loader Styles */
-    .loader-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(6px);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-      animation: fadeIn 0.3s ease-in;
-    }
-
-    .loader-overlay.active {
-      display: flex;
-    }
-
-    .loader-container {
-      text-align: center;
-      color: white;
-      font-family: 'Segoe UI', sans-serif;
-      animation: scaleIn 0.5s ease;
-    }
-
-    .fancy-spinner {
-      width: 60px;
-      height: 60px;
-      border: 6px solid transparent;
-      border-top: 6px solid #00f0ff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      box-shadow: 0 0 20px #00f0ff, 0 0 30px #00f0ff;
-      margin: 0 auto 10px;
-    }
-
-    .loader-container p {
-      font-size: 16px;
-      margin-top: 5px;
-      color: #e0e0e0;
-      animation: fadeInText 0.8s ease-in;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0); }
-      100% { transform: rotate(360deg); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes fadeInText {
-      0% { opacity: 0; transform: translateY(10px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes scaleIn {
-      0% { transform: scale(0.8); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    @media (max-width: 480px) {
-        .fancy-spinner{
-            width: 40px;
-            height: 40px;
-        }
-    }
-    p{
-        color: #000000;
-    }
-  </style>
+  <title>Sign Up | Employee Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../static/login.css" />
+  <link rel="stylesheet" href="../static/signup.css" />
+ 
 </head>
+<style>
+  .notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 350px;
+  width: 100%;
+}
 
+.notification {
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transform: translateX(120%);
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.notification.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.notification.success {
+  background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+}
+
+.notification.error {
+  background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+}
+
+.notification i {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 15px;
+  padding: 0;
+}
+</style>
 <body>
+  <div class="notification-container" id="notificationContainer"></div>
+   <div class="floating-bg">
+        <div class="floating-circle circle-1"></div>
+        <div class="floating-circle circle-2"></div>
+        <div class="floating-circle circle-3"></div>
+    </div>
+  <div class="particles" id="particles"></div>
+
   <div class="container">
-    <h2>Create Your Account</h2>
-    <form method="POST" action="{{ url_for('signup') }}">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username" placeholder="Enter your username" required>
+    <div class="signup-header">
+      <h2>Create Account</h2>
+      <p>Join our employee management system</p>
+    </div>
 
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" placeholder="Enter your email" required>
+    <form method="POST" action="{{ url_for('signup') }}" id="signupForm">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="form-control" placeholder="Enter your username" required />
+      </div>
 
-      <label for="password">Password:</label>
-      <div class="password-container">
-        <input type="password" id="password" name="password" placeholder="Enter your password" required>
-        <span class="toggle-password" onclick="togglePassword()">👁️</span>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="your.email@company.com" required />
+      </div>
+
+      <div class="form-group password-container">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required />
+        <span class="toggle-password" onclick="togglePassword()">
+          <i class="fas fa-eye"></i>
+        </span>
       </div>
 
       <div class="radio-group">
-        <label><input type="radio" name="role" value="employee" checked> Employee</label>
-        <label><input type="radio" name="role" value="admin"> Admin</label>
+        <div class="radio-option">
+          <input type="radio" id="employee" name="role" value="employee" checked>
+          <label for="employee">Employee</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="admin" name="role" value="admin">
+          <label for="admin">Admin</label>
+        </div>
       </div>
 
-      <button type="submit">Sign Up</button>
+      <button type="submit" class="btn-submit">Sign Up</button>
     </form>
 
     <div class="form-footer">
-      Already have an account? <a href="{{ url_for('login') }}">Login here</a>.
+      Already have an account? <a style="text-decoration:none;" href="{{ url_for('login') }}">Login here</a>
     </div>
   </div>
-
-  <!-- Loader Overlay -->
-  <div id="loaderOverlay" class="loader-overlay">
+ <div id="loaderOverlay" class="loader-overlay">
     <div class="loader-container">
       <div class="fancy-spinner"></div>
      <b> <p>Signing you up, please wait...</p></b>
     </div>
   </div>
-
   <script>
     function togglePassword() {
       const passwordField = document.getElementById('password');
-      const toggleIcon = document.querySelector('.toggle-password');
+      const icon = document.querySelector('.toggle-password i');
+
       if (passwordField.type === 'password') {
         passwordField.type = 'text';
-        toggleIcon.textContent = '🙈';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
       } else {
         passwordField.type = 'password';
-        toggleIcon.textContent = '👁️';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
       }
     }
 
+    // Floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 40;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+
+        const size = Math.random() * 6 + 4;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 10;
+
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${left}%`;
+        particle.style.animationDuration = `${duration}s`;
+        particle.style.animationDelay = `${delay}s`;
+
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', createParticles);
     const signupForm = document.querySelector('form');
     const loaderOverlay = document.getElementById('loaderOverlay');
 
@@ -257,5 +169,51 @@
       loaderOverlay.classList.add('active');
     });
   </script>
+  <script>
+  function showNotification(message, type = 'success') {
+    const container = document.getElementById('notificationContainer');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    let icon = type === 'success' ? 'fa-check-circle' : 
+               type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+    
+    notification.innerHTML = `
+      <i class="fas ${icon}"></i>
+      <span>${message}</span>
+      <button class="notification-close" onclick="this.parentElement.remove()">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+
+    container.appendChild(notification);
+
+    setTimeout(() => {
+      notification.classList.add('show');
+    }, 100);
+
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => {
+        notification.remove();
+      }, 300);
+    }, 4000);
+  }
+
+  // Auto-show notification if ?message=...&type=... is in URL
+  document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const message = params.get("message");
+    const type = params.get("type") || "success";
+
+    if (message) {
+      showNotification(decodeURIComponent(message), type);
+
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  });
+</script>
+
 </body>
 </html>

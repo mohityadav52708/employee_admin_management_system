@@ -1,0 +1,226 @@
+:root {
+      --primary: #6a11cb;
+      --secondary: #2575fc;
+      --accent: #4cc9f0;
+      --light: #ffffff;
+      --dark: #212529;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 25px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 450px;
+      z-index: 2;
+      backdrop-filter: blur(8px);
+    }
+
+    .signup-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .signup-header h2 {
+      color: #fff;
+      font-size: 1.8rem;
+    }
+
+    .signup-header p {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 70%;
+      transform: translateY(-50%);
+      color: #ccc;
+      cursor: pointer;
+    }
+
+    .radio-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+    }
+
+    .radio-option input {
+      margin-right: 0.5rem;
+    }
+
+    .radio-option label {
+      color: #eee;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      margin-top: 1rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn-submit:hover {
+      background: #38bdf8;
+    }
+
+    .form-footer {
+      margin-top: 1rem;
+      text-align: center;
+      color: #eee;
+    }
+
+    .form-footer a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+
+    
+    .loader-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(6px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .loader-overlay.active {
+      display: flex;
+    }
+
+    .loader-container {
+      text-align: center;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      animation: scaleIn 0.5s ease;
+    }
+
+    .fancy-spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid transparent;
+      border-top: 6px solid #00f0ff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      box-shadow: 0 0 20px #00f0ff, 0 0 30px #00f0ff;
+      margin: 0 auto 10px;
+    }
+
+    .loader-container p {
+      font-size: 16px;
+      margin-top: 5px;
+      color: #e0e0e0;
+      animation: fadeInText 0.8s ease-in;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeInText {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scaleIn {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @media (max-width: 480px) {
+        .fancy-spinner{
+            width: 40px;
+            height: 40px;
+        }
+    }
+    p{
+        color: #000000;
+    }

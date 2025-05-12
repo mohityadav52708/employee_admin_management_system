@@ -184,8 +184,7 @@ def signup():
                 "role": role
             })
             send_email(email, "Email Verification", f"Your OTP is: {otp}")
-            flash('OTP sent to your email.', 'info')
-            return redirect(url_for('verify_otp', email=email))
+            return redirect(url_for('verify_otp', email=email, message='OTP sent to your email', type='success'))
     return render_template('signup.html')
 
 @app.route('/verify-otp', methods=['GET', 'POST'])
@@ -253,10 +252,14 @@ def login():
 
             # Access control: Ensure correct portal login
             if portal == 'admin' and session['role'] != 'admin':
-                return render_template('login.html', alert_message="Access denied. Only admin can access this page.")
+                flash("Access denied. Only admin can access this page.", "error")
+                return redirect(url_for('login', portal='admin'))
+
 
             if portal == 'employee' and session['role'] != 'employee':
-                return render_template('login.html', alert_message="Access denied. Only employees can access this page.")
+                flash("Access denied. Only employees can access this page.", "error")
+                return redirect(url_for('login', portal='employee'))
+
 
             # Mark employee as Online & log attendance
             if session['role'] == 'employee':
