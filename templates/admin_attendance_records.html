@@ -297,9 +297,10 @@
                                 <td>{{ record.check_in_str if record.check_in_str else '--:--:--' }}</td>
                                 <td>{{ record.check_out_str if record.check_out_str else '--:--:--' }}</td>
                                 <td>{{ record.duration if record.duration else 'N/A' }}</td>
-                                <td>
+                                <td >
                                     <span class="status-badge 
                                         {% if record.status == 'Present' %}badge-present
+                                        {% elif record.status == 'Online' %}badge-present
                                         {% elif record.status == 'Completed' %}badge-completed
                                         {% elif record.status == 'Leave' %}badge-leave
                                         {% else %}badge-absent{% endif %}">
