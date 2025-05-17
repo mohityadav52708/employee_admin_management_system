@@ -12,6 +12,8 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../static/employee_attendance.css" />
 
     <style></style>
@@ -348,7 +350,7 @@
                     <h2 class="mb-0">{{ attendance_percentage }}%</h2>
                   </div>
                   <div class="bg-white rounded-circle p-3">
-                    <i class="fas fa-percentage text-purple fa-2x"></i>
+                    <i style="color:#8e44ad;" class="fas fa-percentage text-purple fa-2x"></i>
                   </div>
                 </div>
                 <div class="progress mt-2">
@@ -506,6 +508,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       const burgerIcon = document.getElementById("burgerIcon");
       const burgerIconClose = document.getElementById("burgerIconClose");
@@ -571,7 +576,8 @@
           });
       }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+
+
     <script>
       // [Previous JavaScript remains the same until the charts section]
 
@@ -764,20 +770,8 @@
         legendItem.appendChild(label);
         employeeStatusLegend.appendChild(legendItem);
       });
-const burgerIcon = document.getElementById('burgerIcon');
-      const burgerIconClose = document.getElementById('burgerIconClose');
-      const sidebar = document.getElementById('sidebar');
-      burgerIcon.addEventListener('click', () => {
-        sidebar.classList.add('show');
-        burgerIcon.style.display = 'none';
-        burgerIconClose.style.display = 'block';
-      });
-      burgerIconClose.addEventListener('click', () => {
-        sidebar.classList.remove('show');
-        burgerIcon.style.display = 'block';
-        burgerIconClose.style.display = 'none';
-      });
       // [Rest of the JavaScript remains the same]
-    </script>
+    </script>  
+  
   </body>
 </html>
