@@ -127,7 +127,7 @@
           </div>
         </a>
         <a href="{{url_for('employee_salary')}}">
-          <div class="sidelink">
+          <div class="sidelink nav-item active">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -145,11 +145,10 @@
               <path d="M2 9.5h20v5H2z"></path>
               <circle cx="17" cy="12" r="1"></circle>
             </svg>
-
             My Salary
           </div>
         </a>
-        <a href="#">
+        <a href="{{url_for('employee_attendance')}}">
           <div class="sidelink">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +169,7 @@
           </div>
         </a>
         <a href="{{url_for('complaints')}}">
-          <div class="sidelink nav-item active">
+          <div class="sidelink">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -276,28 +275,27 @@
         </div>
     </div>
 
-    <script src="https://kit.fontawesome.com/your-kit-code.js" crossorigin="anonymous"></script>
     <script>
         document.getElementById('slipForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const monthYear = document.getElementById('monthYear').value;
             window.location.href = `/generate_salary_slip?email={{ user.email }}&month=${monthYear}`;
         });
-         const burgerIcon = document.getElementById('burgerIcon');
-        const burgerIconClose = document.getElementById('burgerIconClose');
-        const sidebar = document.getElementById('sidebar');
+       const burgerIcon = document.getElementById("burgerIcon");
+   const burgerIconClose = document.getElementById("burgerIconClose");
+   const sidebar = document.getElementById("sidebar");
 
-        burgerIcon.addEventListener('click', () => {
-            sidebar.classList.add('show');
-            burgerIcon.style.display = 'none';
-            burgerIconClose.style.display = 'block';
-        });
+   burgerIcon.addEventListener("click", () => {
+     sidebar.classList.add("show");
+     burgerIcon.style.display = "none";
+     burgerIconClose.style.display = "block";
+   });
 
-        burgerIconClose.addEventListener('click', () => {
-            sidebar.classList.remove('show');
-            burgerIcon.style.display = 'block';
-            burgerIconClose.style.display = 'none';
-        });
+   burgerIconClose.addEventListener("click", () => {
+     sidebar.classList.remove("show");
+     burgerIcon.style.display = "block";
+     burgerIconClose.style.display = "none";
+   });
     </script>
 </body>
 </html>

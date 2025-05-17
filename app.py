@@ -32,7 +32,17 @@ client = MongoClient(uri)
 db = client["endsem"]
 users_collection = db["users"]
 attendance_collection = db["attendance"]
+collection = db["attendance"]
 
+# Convert all old documents that have login_time/logout_time but no check_in/check_out
+for doc in collection.find({"login_time": {"$exists": True}, "check_in": {"$exists": False}}):
+    updates = {}
+    if 'login_time' in doc:
+        updates['check_in'] = doc['login_time']
+    if 'logout_time' in doc:
+        updates['check_out'] = doc['logout_time']
+    
+    collection.update_one({"_id": doc["_id"]}, {"$set": updates})
 # Email Configuration
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
@@ -1028,5 +1038,273 @@ def generate_salary_slip():
         download_name=filename,
         mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
+# Add these new routes to your existing app.py
+@app.route('/attendance/mark', methods=['POST'])
+def mark_attendance():
+    try:
+        if 'user' not in session:
+            return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+        email = session['user']
+        print(f"[DEBUG] Email from session: {email}")
+        
+        today = datetime.today().strftime('%Y-%m-%d')
+        current_time = datetime.now()
+
+        user = users_collection.find_one({"email": email})
+        if user.get('role') == 'admin':
+            return jsonify({"success": False, "message": "Admins don't need to mark attendance"}), 400
+
+        attendance_record = attendance_collection.find_one({
+            "email": email,
+            "date": today
+        })
+
+        print(f"[DEBUG] Found record: {attendance_record}")
+        response_data = {}
+
+        if not attendance_record or 'check_in' not in attendance_record:
+            # Safe check-in
+            attendance_collection.update_one(
+                {"email": email, "date": today},
+                {
+                    "$set": {
+                        "check_in": current_time,
+                        "status": "Present",
+                        "username": user.get('username', 'Employee')
+                    },
+                    "$setOnInsert": {
+                        "check_out": None,
+                        "duration": None,
+                        "logout_time": None,
+                        "login_time": current_time
+                    }
+                },
+                upsert=True
+            )
+            response_data = {
+                "success": True,
+                "message": f"Checked in successfully at {current_time.strftime('%H:%M:%S')}",
+                "action": "check_in"
+            }
+
+        elif attendance_record.get('check_in') and not attendance_record.get("check_out"):
+            # Safe check-out
+            check_in_time = attendance_record.get('check_in') or attendance_record.get('login_time')
+            if isinstance(check_in_time, str):
+                check_in_time = datetime.fromisoformat(check_in_time)
+
+            duration = current_time - check_in_time
+            duration_str = str(duration).split('.')[0]
+
+            attendance_collection.update_one(
+                {"_id": attendance_record["_id"]},
+                {"$set": {
+                    "check_out": current_time,
+                    "logout_time": current_time,
+                    "duration": duration_str,
+                    "status": "Completed"
+                }}
+            )
+            response_data = {
+                "success": True,
+                "message": f"Checked out successfully at {current_time.strftime('%H:%M:%S')}",
+                "duration": duration_str,
+                "action": "check_out"
+            }
+
+        else:
+            response_data = {
+                "success": False,
+                "message": "You've already completed attendance for today"
+            }
+
+        return jsonify(response_data)
+
+    except Exception as e:
+        import traceback
+        print("⚠️ Internal Server Error:\n", traceback.format_exc())
+        return jsonify({
+            "success": False,
+            "message": f"An error occurred: {str(e)}"
+        }), 500
+
+
+@app.route('/employee/attendance')
+def employee_attendance():
+    if 'user' not in session:
+        flash("Please log in to access attendance features.", "danger")
+        return redirect(url_for('login'))
+    
+    user = users_collection.find_one({"email": session['user']})
+    username = user['username']
+    if not user:
+        flash("User not found.", "danger")
+        return redirect(url_for('login'))
+    
+    username = user.get('username', 'User')
+    
+    # Get today's attendance status
+    today = datetime.today().strftime('%Y-%m-%d')
+    today_record = attendance_collection.find_one({
+        "email": session['user'],
+        "date": today
+    })
+    
+    # Get attendance summary for the month
+    current_month = datetime.today().strftime('%Y-%m')
+    monthly_records = list(attendance_collection.find({
+        "email": session['user'],
+        "date": {"$regex": f"^{current_month}"}
+    }))
+    
+    # Calculate summary - safe division
+    present_days = sum(1 for r in monthly_records if r.get('status') in ['Present', 'Online', 'Completed'])
+    absent_days = sum(1 for r in monthly_records if r.get('status') == 'Absent')
+    leave_days = sum(1 for r in monthly_records if r.get('status') == 'Leave')
+    total_days = present_days + absent_days + leave_days
+    
+    attendance_percentage = 0.0
+    if total_days > 0:
+        attendance_percentage = round((present_days / total_days) * 100, 1)
+    
+    # Get last 30 days history
+    thirty_days_ago = (datetime.today() - timedelta(days=30)).strftime('%Y-%m-%d')
+    history = list(attendance_collection.find({
+        "email": session['user'],
+        "date": {"$gte": thirty_days_ago}
+    }).sort("date", -1))
+    
+    # Format datetime objects for template
+    for record in history:
+        if 'check_in' in record and isinstance(record['check_in'], datetime):
+            record['check_in_str'] = record['check_in'].strftime('%H:%M:%S')
+        if 'check_out' in record and isinstance(record['check_out'], datetime):
+            record['check_out_str'] = record['check_out'].strftime('%H:%M:%S')
+    
+    return render_template(
+        'employee_attendance.html',
+        username=username,
+        today_record=today_record,
+        present_days=present_days,
+        absent_days=absent_days,
+        leave_days=leave_days,
+        attendance_percentage=attendance_percentage,
+        history=history,
+        today=today,
+        user=user
+    )
+
+
+@app.route('/admin/attendance-records')
+def admin_attendance_records():
+    if 'user' not in session or session.get('role') != 'admin':
+        flash("Access denied. Only admins can view this page.", "danger")
+        return redirect(url_for('login'))
+    
+    # Get filter parameters with defaults
+    date_filter = request.args.get('date', '')
+    employee_filter = request.args.get('employee', '')
+    
+    query = {}
+    if date_filter:
+        query['date'] = date_filter
+    if employee_filter:
+        query['email'] = employee_filter
+    
+    # Fetch records with pagination
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+    skip = (page - 1) * per_page
+    
+    attendance_records = list(attendance_collection.find(query))
+    total_records = attendance_collection.count_documents(query)
+    
+    # Format datetime objects
+    for record in attendance_records:
+        user = users_collection.find_one({"email": record.get("email")})
+        record['username'] = user.get("username", "N/A") if user else "N/A"
+
+        if 'check_in' in record and isinstance(record['check_in'], datetime):
+            record['check_in_str'] = record['check_in'].strftime('%H:%M:%S')
+        if 'check_out' in record and isinstance(record['check_out'], datetime):
+            record['check_out_str'] = record['check_out'].strftime('%H:%M:%S')
+    
+    # Get list of employees for filter dropdown
+    employees = list(users_collection.find({"role": "employee"}, {"email": 1, "username": 1}))
+    
+    user = users_collection.find_one({"email": session['user']})
+    username = user.get('username', 'Admin')
+    
+    return render_template(
+        'admin_attendance_records.html',
+        attendance_records=attendance_records,
+        employees=employees,
+        username=username,
+        selected_date=date_filter,
+        selected_employee=employee_filter,
+        page=page,
+        per_page=per_page,
+        total_records=total_records
+    )
+
+@app.route('/export-attendance')
+def export_attendance():
+    if 'user' not in session or session.get('role') != 'admin':
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    # Get filter parameters
+    date_filter = request.args.get('date', '')
+    employee_filter = request.args.get('employee', '')
+    
+    query = {}
+    if date_filter:
+        query['date'] = date_filter
+    if employee_filter:
+        query['email'] = employee_filter
+    
+    records = list(attendance_collection.find(query).sort("date", -1))
+    
+    # Prepare data for export
+    data = []
+    for record in records:
+        user = users_collection.find_one({"email": record["email"]})
+        check_in = record.get("check_in", "").strftime('%H:%M:%S') if record.get("check_in") else "N/A"
+        check_out = record.get("check_out", "").strftime('%H:%M:%S') if record.get("check_out") else "N/A"
+        
+        data.append({
+            "Name": user.get("username", "N/A") if user else "N/A",
+            "Email": record["email"],
+            "Date": record["date"],
+            "Check-in": check_in,
+            "Check-out": check_out,
+            "Duration": record.get("duration", "N/A"),
+            "Status": record.get("status", "N/A")
+        })
+    
+    # Create Excel file
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        pd.DataFrame(data).to_excel(writer, index=False, sheet_name='Attendance Records')
+    
+    output.seek(0)
+    filename = f"attendance_records_{date_filter if date_filter else 'all'}.xlsx"
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=filename,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+@app.template_filter('datetimeformat')
+def datetimeformat(value, format='%Y-%m-%d'):
+    if isinstance(value, datetime):
+        return value.strftime(format)
+    elif isinstance(value, str):
+        try:
+            dt = datetime.fromisoformat(value)
+            return dt.strftime(format)
+        except ValueError:
+            return value
+    return value
 if __name__ == '__main__':
     app.run(debug=True)
